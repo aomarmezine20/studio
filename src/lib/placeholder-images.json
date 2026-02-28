@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "Scientific research lab or university hall",
+      "imageUrl": "https://images.unsplash.com/photo-1699978786249-fa3ad6cf051d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzY2llbmNlJTIwdW5pdmVyc2l0eXxlbnwwfHx8fDE3NzIyOTI3MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "science university"
+    },
+    {
+      "id": "director",
+      "description": "Portrait of a distinguished academic director",
+      "imageUrl": "https://images.unsplash.com/photo-1758685734463-98672a67dd1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcm9mZXNzb3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzIyOTI3MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "professor portrait"
+    },
+    {
+      "id": "colloque",
+      "description": "Scientific conference auditorium",
+      "imageUrl": "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb25mZXJlbmNlJTIwaGFsbHxlbnwwfHx8fDE3NzIyOTI3MjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "conference hall"
+    },
+    {
+      "id": "reem-cover",
+      "description": "Academic journal cover",
+      "imageUrl": "https://images.unsplash.com/photo-1641154748135-8032a61a3f80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxib29rJTIwY292ZXJ8ZW58MHx8fHwxNzcyMjcxOTUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "book cover"
+    }
+  ]
 }
