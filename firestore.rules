@@ -1,0 +1,151 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * ScienceConnect Security Rules
+     * 
+     * Core Philosophy:
+     * This ruleset implements a robust Role-Based Access Control (RBAC) model optimized for performance
+     * and Authorization Independence. Access is primarily governed by administrative roles (Super Admin, 
+     * Content Manager) verified through high-speed lookup collections.
+     *
+     * Data Structure:
+     * - /users/{userId}: Administrative user profiles.
+     * - /roles_superAdmin/{userId}: Existence-based role tracking for Super Admins.
+     * - /roles_contentManager/{userId}: Existence-based role tracking for Content Managers.
+     * - /{contentCollections}/{id}: Publicly readable content (Articles, Events, Publications, Media, Homepage).
+     * - /contactMessages/{id}: Publicly writable, admin-only readable submissions.
+     *
+     * Key Security Decisions:
+     * 1. Role Denormalization: Admin roles are mirrored into dedicated collections (/roles_*) to allow 
+     *    fast, atomic exists() checks in security rules without complex joins or multiple get() calls.
+     * 2. Public Reading: Scientific content is globally readable to facilitate public engagement.
+     * 3. Content Management: Both Super Admins and Content Managers have full CRUD permissions 
+     *    on articles, events, and media.
+     * 4. User Protection: Only Super Admins can modify user records or change roles. Users can 
+     *    read their own profiles.
+     */
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the user is authenticated. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the user matches the provided ID. */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /** @description Efficiently checks if the user has the Super Admin role. */
+    function isSuperAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_superAdmin/$(request.auth.uid));
+    }
+
+    /** @description Efficiently checks if the user has the Content Manager role. */
+    function isContentManager() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_contentManager/$(request.auth.uid));
+    }
+
+    /** @description Checks if the user holds any administrative role. */
+    function isAdmin() {
+      return isSuperAdmin() || isContentManager();
+    }
+
+    /** @description Combines admin check with existence check for updates and deletes. */
+    function isExistingAdmin() {
+      return isAdmin() && resource != null;
+    }
+
+    /** @description Combines Super Admin check with existence check. */
+    function isExistingSuperAdmin() {
+      return isSuperAdmin() && resource != null;
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for administrative user profiles.
+     * @path /users/{userId}
+     * @allow (get) If user is the profile owner or a Super Admin.
+     * @deny (write) If user is not a Super Admin.
+     * @principle Restricts user management to Super Admins while allowing self-profile access.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isSuperAdmin();
+      allow list: if isSuperAdmin();
+      allow create: if isSuperAdmin();
+      allow update, delete: if isExistingSuperAdmin();
+    }
+
+    /**
+     * @description Role tracking collections for efficient authorization.
+     * @path /roles_superAdmin/{userId} or /roles_contentManager/{userId}
+     * @allow (read/write) If user is a Super Admin.
+     * @deny (any) If user is not a Super Admin.
+     * @principle Uses existence checks for high-performance role-based authorization.
+     */
+    match /roles_superAdmin/{userId} {
+      allow get, list, create: if isSuperAdmin();
+      allow update, delete: if isExistingSuperAdmin();
+    }
+    match /roles_contentManager/{userId} {
+      allow get, list, create: if isSuperAdmin();
+      allow update, delete: if isExistingSuperAdmin();
+    }
+
+    /**
+     * @description Rules for public content (Articles, Events, Publications, Media, Homepage).
+     * @path /articles/{id}, /events/{id}, /publications/{id}, /media/{id}, /homepageSections/{id}
+     * @allow (read) Public access for everyone.
+     * @allow (write) Restricted to authenticated Admins.
+     * @principle Provides public visibility with administrative-only content control.
+     */
+    match /articles/{articleId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isExistingAdmin();
+    }
+
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isExistingAdmin();
+    }
+
+    match /publications/{publicationId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isExistingAdmin();
+    }
+
+    match /media/{mediaId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isExistingAdmin();
+    }
+
+    match /homepageSections/{sectionId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Rules for the contact form submissions.
+     * @path /contactMessages/{messageId}
+     * @allow (create) Public access to allow any visitor to send a message.
+     * @allow (get, list, update) Restricted to Admins to manage and reply to messages.
+     * @deny (delete) Standard users cannot delete messages.
+     * @principle Segregates public submission from private administrative management.
+     */
+    match /contactMessages/{messageId} {
+      allow get, list: if isAdmin();
+      allow create: if true;
+      allow update: if isExistingAdmin();
+      allow delete: if isExistingAdmin();
+    }
+  }
+}

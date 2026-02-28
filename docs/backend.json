@@ -1,0 +1,572 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents an administrative user with specific roles and access permissions within the application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the administrator, used for login.",
+          "format": "email"
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the administrator."
+        },
+        "role": {
+          "type": "string",
+          "description": "The administrative role assigned to the user (e.g., 'Super Admin', 'Content Manager')."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the user account (e.g., 'active', 'disabled')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user entity was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user entity was last updated.",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Reference to the User ID who created this user entry. (Relationship: User 1:N User)"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "name",
+        "role",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "Article": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Article",
+      "type": "object",
+      "description": "Represents a scientific article or news post published on the website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Article entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the article."
+        },
+        "slug": {
+          "type": "string",
+          "description": "A URL-friendly version of the title, used for permalinks."
+        },
+        "content": {
+          "type": "string",
+          "description": "The full rich text content of the article, typically stored as HTML."
+        },
+        "seoTitle": {
+          "type": "string",
+          "description": "Custom SEO title for the article, displayed in browser tabs and search results."
+        },
+        "seoDescription": {
+          "type": "string",
+          "description": "Custom SEO description (meta description) for the article."
+        },
+        "featuredImageId": {
+          "type": "string",
+          "description": "Reference to the Media entity for the article's featured image. (Relationship: Media 1:N Article)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the article was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the article was last updated.",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Reference to the User ID who created this article. (Relationship: User 1:N Article)"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "slug",
+        "content",
+        "seoTitle",
+        "seoDescription",
+        "featuredImageId",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "Event": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Event",
+      "type": "object",
+      "description": "Represents a scientific event, such as a colloquium, conference, or workshop.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Event entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the event."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the event."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date and time of the event.",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "string",
+          "description": "The physical or virtual location where the event will take place."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the event (e.g., 'Colloques et Conférences', 'Webinaires')."
+        },
+        "posterImageId": {
+          "type": "string",
+          "description": "Reference to the Media entity for the event's poster image. (Relationship: Media 1:N Event)"
+        },
+        "registrationLink": {
+          "type": "string",
+          "description": "A URL for event registration.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the event was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the event was last updated.",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Reference to the User ID who created this event. (Relationship: User 1:N Event)"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "date",
+        "location",
+        "category",
+        "posterImageId",
+        "registrationLink",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "Publication": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Publication",
+      "type": "object",
+      "description": "Represents a scientific publication, such as a journal, book, or research report.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Publication entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the publication."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or abstract of the publication."
+        },
+        "pdfFileId": {
+          "type": "string",
+          "description": "Reference to the Media entity for the publication's PDF file. (Relationship: Media 1:N Publication)"
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the publication (e.g., 'Revue des Études Économiques et Management', 'Ouvrages et Publications Spéciales')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the publication record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the publication record was last updated.",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Reference to the User ID who created this publication entry. (Relationship: User 1:N Publication)"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "pdfFileId",
+        "category",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "Media": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Media",
+      "type": "object",
+      "description": "Represents a digital asset like an image, PDF document, or a video link.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Media entity."
+        },
+        "fileName": {
+          "type": "string",
+          "description": "The original file name of the uploaded media."
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL to access the media (Firebase Storage URL or YouTube link).",
+          "format": "uri"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of media (e.g., 'image', 'pdf', 'video')."
+        },
+        "altText": {
+          "type": "string",
+          "description": "Alternative text for images, used for accessibility and SEO."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the media was uploaded.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the media record was last updated.",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Reference to the User ID who uploaded this media. (Relationship: User 1:N Media)"
+        }
+      },
+      "required": [
+        "id",
+        "fileName",
+        "url",
+        "type",
+        "altText",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "HomepageSection": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "HomepageSection",
+      "type": "object",
+      "description": "Represents a configurable section on the website's homepage, allowing dynamic content management.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the homepage section (e.g., 'hero', 'mission', 'featuredAnnouncements')."
+        },
+        "sectionKey": {
+          "type": "string",
+          "description": "A programmatic key for the section, used by the frontend to render the correct component."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "A human-readable name for the section, used in the admin interface."
+        },
+        "isVisible": {
+          "type": "boolean",
+          "description": "A flag indicating whether the section should be visible on the public homepage."
+        },
+        "order": {
+          "type": "number",
+          "description": "The display order of the section on the homepage, allowing reordering."
+        },
+        "contentData": {
+          "type": "string",
+          "description": "A JSON stringified object containing section-specific content and configuration (e.g., '{ \"title\": \"...\", \"subtitle\": \"...\", \"backgroundImageId\": \"...\" }')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the homepage section configuration was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the homepage section configuration was last updated.",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Reference to the User ID who created this homepage section configuration. (Relationship: User 1:N HomepageSection)"
+        }
+      },
+      "required": [
+        "id",
+        "sectionKey",
+        "displayName",
+        "isVisible",
+        "order",
+        "contentData",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "ContactMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContactMessage",
+      "type": "object",
+      "description": "Stores messages submitted through the public contact form.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ContactMessage entity."
+        },
+        "senderName": {
+          "type": "string",
+          "description": "The name of the person submitting the contact form."
+        },
+        "senderEmail": {
+          "type": "string",
+          "description": "The email address of the sender.",
+          "format": "email"
+        },
+        "subject": {
+          "type": "string",
+          "description": "The subject line of the message."
+        },
+        "message": {
+          "type": "string",
+          "description": "The full content of the message."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the message (e.g., 'new', 'read', 'replied', 'archived')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the contact message was received.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the contact message was last updated (e.g., status change).",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "This field will typically be null or 'public' for contact messages as they are not created by an authenticated admin user. It's included for consistency with the general requirement."
+        },
+        "repliedBy": {
+          "type": "string",
+          "description": "Reference to the User ID of the admin who replied to this message. (Relationship: User 1:N ContactMessage)",
+          "format": "string"
+        },
+        "replyMessage": {
+          "type": "string",
+          "description": "The content of the reply message sent by an admin."
+        }
+      },
+      "required": [
+        "id",
+        "senderName",
+        "senderEmail",
+        "subject",
+        "message",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores administrative user profiles. The 'id' field matches the Firebase Auth UID. Includes 'role' for primary role assignment. Only Super Admins can manage users, and a user can read their own profile.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique Firebase Authentication User ID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_superAdmin/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Auxiliary collection for Super Admin role-based authorization. An empty document exists if the userId is a Super Admin. This denormalizes role information for Authorization Independence and efficient security rule checks (using 'exists()').",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique Firebase Authentication User ID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_contentManager/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Auxiliary collection for Content Manager role-based authorization. An empty document exists if the userId is a Content Manager. This denormalizes role information for Authorization Independence and efficient security rule checks (using 'exists()').",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique Firebase Authentication User ID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/articles/{articleId}",
+        "definition": {
+          "entityName": "Article",
+          "schema": {
+            "$ref": "#/backend/entities/Article"
+          },
+          "description": "Stores scientific articles and news posts. Publicly readable. Admin (Super Admin or Content Manager) can create, edit, and delete. Includes denormalized 'createdBy' for ownership tracking.",
+          "params": [
+            {
+              "name": "articleId",
+              "description": "The unique identifier for the article."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/events/{eventId}",
+        "definition": {
+          "entityName": "Event",
+          "schema": {
+            "$ref": "#/backend/entities/Event"
+          },
+          "description": "Stores scientific events like colloquiums and conferences. Publicly readable. Admin (Super Admin or Content Manager) can create, edit, and delete. Includes denormalized 'createdBy' for ownership tracking.",
+          "params": [
+            {
+              "name": "eventId",
+              "description": "The unique identifier for the event."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/publications/{publicationId}",
+        "definition": {
+          "entityName": "Publication",
+          "schema": {
+            "$ref": "#/backend/entities/Publication"
+          },
+          "description": "Stores scientific publications such as journals and reports. Publicly readable. Admin (Super Admin or Content Manager) can create, edit, and delete. Includes denormalized 'createdBy' for ownership tracking.",
+          "params": [
+            {
+              "name": "publicationId",
+              "description": "The unique identifier for the publication."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/media/{mediaId}",
+        "definition": {
+          "entityName": "Media",
+          "schema": {
+            "$ref": "#/backend/entities/Media"
+          },
+          "description": "Manages digital assets (images, PDFs, video links). Publicly readable if referenced by public content, but only Admin (Super Admin or Content Manager) can upload, edit, and delete. Includes denormalized 'createdBy' for ownership tracking.",
+          "params": [
+            {
+              "name": "mediaId",
+              "description": "The unique identifier for the media asset."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/homepageSections/{sectionId}",
+        "definition": {
+          "entityName": "HomepageSection",
+          "schema": {
+            "$ref": "#/backend/entities/HomepageSection"
+          },
+          "description": "Configurable sections for the website's homepage. Publicly readable (filtered by 'isVisible'). Admin (Super Admin or Content Manager) can create, edit, and delete. Includes denormalized 'createdBy' for ownership tracking.",
+          "params": [
+            {
+              "name": "sectionId",
+              "description": "The unique programmatic key for the homepage section."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/contactMessages/{messageId}",
+        "definition": {
+          "entityName": "ContactMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ContactMessage"
+          },
+          "description": "Stores messages submitted through the public contact form. Unauthenticated users can create. Only Admin (Super Admin or Content Manager) can read, list, and update (e.g., change status, add reply). Includes 'status' for explicit state modeling and 'repliedBy' for admin action tracking.",
+          "params": [
+            {
+              "name": "messageId",
+              "description": "The unique identifier for the contact message."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure for ScienceConnect is designed with a strong emphasis on Authorization Independence and Query-as-Permission (QAP) principles, ensuring security, scalability, and debuggability. All content entities, such as Articles, Events, Publications, and Homepage Sections, are structured as top-level collections (e.g., '/articles/{articleId}'). This allows for straightforward public read access and simplifies administrative content management, as all documents within these collections share a homogeneous security posture.\n\nAuthorization Independence is primarily achieved through two key mechanisms:\n1.  **Denormalized Admin Roles:** Instead of relying on a `get()` call to a user's profile to determine their role, dedicated 'existence' collections are used: `/roles_superAdmin/{userId}` and `/roles_contentManager/{userId}`. An empty document's presence in these collections signifies a user's role. This allows security rules to leverage efficient `exists(/databases/$(database)/documents/roles_superAdmin/$(request.auth.uid))` checks, which are atomic and do not incur additional reads for authorization. This is critical for robust transactions and debugging, as rule evaluation becomes independent of other document reads.\n2.  **Explicit `createdBy` Field:** Every managed content document (Articles, Events, Publications, Media, HomepageSections) includes a `createdBy` field. While general content management is typically role-based for this application, this field provides the foundation for granular, creator-based permissions should they be required in the future without needing to query a separate user document.\n\nQAPs (Query-as-Permission) are supported through structural segregation and explicit access modeling:\n*   **Public Read Collections:** Collections like `/articles`, `/events`, `/publications`, and `/homepageSections` are designed for public consumption. Security rules can grant blanket `read` access, allowing the frontend to list and display these items without requiring complex server-side filtering. Any filtering logic (e.g., `isVisible` for homepage sections) is purely for presentation and not a security concern.\n*   **Admin-Managed Content:** For write operations across all content collections, access is restricted to authenticated users whose UIDs exist in either the `/roles_superAdmin` or `/roles_contentManager` collections. This ensures that `list` operations for admins are secure by virtue of the caller's identity, not by filtering results. \n*   **Contact Messages:** The `/contactMessages` collection allows unauthenticated users to `create` messages. However, `read` and `list` operations are strictly limited to authenticated administrators, providing clear segregation of public submission from private administration.\n*   **User Management:** The `/users` collection and the `/roles_*` collections are secured for `read` (self-only for users, list for Super Admins) and `write` (Super Admins only), ensuring that user and role management is highly protected. The `userId` wildcard directly corresponds to `request.auth.uid` for self-read rules."
+  }
+}
