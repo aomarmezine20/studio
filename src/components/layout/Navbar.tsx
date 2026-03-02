@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -21,9 +22,9 @@ const sections = [
     title: "Identité",
     items: [
       { title: "Qui sommes-nous", href: "/a-propos" },
-      { title: "Mot du Directeur", href: "/a-propos#directeur" },
+      { title: "Mot du Directeur", href: "/#directeur" },
       { title: "Objectifs", href: "/a-propos#objectifs" },
-      { title: "Adhésion", href: "/adhesion" },
+      { title: "Gouvernance", href: "/gouvernance" },
     ],
   },
   {
@@ -38,17 +39,17 @@ const sections = [
   {
     title: "Publications",
     items: [
-      { title: "Revue REEM", href: "/publications/reem" },
-      { title: "Ouvrages Spéciaux", href: "/publications/ouvrages" },
-      { title: "Rapports de Recherche", href: "/publications/rapports" },
+      { title: "Revue REEM", href: "/publications?cat=reem" },
+      { title: "Ouvrages Spéciaux", href: "/publications?cat=ouvrages" },
+      { title: "Rapports de Recherche", href: "/publications?cat=rapports" },
     ],
   },
   {
     title: "Expertise",
     items: [
-      { title: "Gouvernance", href: "/gouvernance" },
       { title: "Annuaire des Experts", href: "/experts" },
-      { title: "Partenariats", href: "/partenariats" },
+      { title: "Partenariats", href: "/#piliers" },
+      { title: "Adhésion", href: "/adhesion" },
     ],
   },
 ];
@@ -67,7 +68,7 @@ export function Navbar() {
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center space-x-4">
+        <div className="hidden lg:flex items-center space-x-2">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
@@ -112,8 +113,8 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="hidden sm:flex" asChild>
-            <Link href="/admin/login">Admin</Link>
+          <Button variant="default" size="sm" className="hidden sm:flex bg-secondary hover:bg-secondary/90 text-primary font-bold" asChild>
+            <Link href="/admin/login">Connexion Admin</Link>
           </Button>
           
           {/* Mobile Menu */}
@@ -125,11 +126,11 @@ export function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-4 mt-8">
-                <Link href="/" className="text-lg font-semibold">Accueil</Link>
+              <nav className="flex flex-col gap-6 mt-8">
+                <Link href="/" className="text-lg font-bold text-primary">Accueil</Link>
                 {sections.map((section) => (
                   <div key={section.title} className="flex flex-col gap-2">
-                    <h4 className="text-sm font-bold uppercase text-muted-foreground">{section.title}</h4>
+                    <h4 className="text-xs font-bold uppercase text-secondary tracking-widest">{section.title}</h4>
                     {section.items.map((item) => (
                       <Link key={item.title} href={item.href} className="pl-4 text-base hover:text-primary transition-colors">
                         {item.title}
@@ -137,8 +138,11 @@ export function Navbar() {
                     ))}
                   </div>
                 ))}
-                <Link href="/mediatheque" className="text-lg font-semibold">Médiathèque</Link>
-                <Link href="/contact" className="text-lg font-semibold">Contact</Link>
+                <Link href="/mediatheque" className="text-lg font-bold text-primary">Médiathèque</Link>
+                <Link href="/contact" className="text-lg font-bold text-primary">Contact</Link>
+                <Button className="mt-4 bg-secondary text-primary font-bold" asChild>
+                  <Link href="/admin/login">Admin Dashboard</Link>
+                </Button>
               </nav>
             </SheetContent>
           </Sheet>
@@ -155,19 +159,18 @@ const ListItem = React.forwardRef<
   return (
     <li>
       <NavigationMenuLink asChild>
-        <a
-          ref={ref}
+        <Link
+          href={props.href || "#"}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className
           )}
-          {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+          <div className="text-sm font-bold leading-none text-primary">{title}</div>
+          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
             {children}
           </p>
-        </a>
+        </Link>
       </NavigationMenuLink>
     </li>
   );
