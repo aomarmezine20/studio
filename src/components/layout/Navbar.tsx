@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Menu, Microscope } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const sections = [
   {
@@ -48,11 +49,11 @@ const sections = [
 export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-20 items-center justify-between">
+      <div className="container flex h-20 items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center space-x-2">
-            <Microscope className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold tracking-tight text-primary font-headline">
+            <Microscope className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
+            <span className="text-lg sm:text-xl font-bold tracking-tight text-primary font-headline">
               CEEMTS
             </span>
           </Link>
@@ -130,27 +131,38 @@ export function Navbar() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-6 mt-8">
-                <Link href="/" className="text-lg font-bold text-primary">Accueil</Link>
-                {sections.map((section) => (
-                  <div key={section.title} className="flex flex-col gap-2">
-                    <h4 className="text-xs font-bold uppercase text-secondary tracking-widest">{section.title}</h4>
-                    {section.items.map((item) => (
-                      <Link key={item.title} href={item.href} className="pl-4 text-base hover:text-primary transition-colors">
-                        {item.title}
-                      </Link>
-                    ))}
+            <SheetContent side="right" className="w-[85vw] sm:w-[400px] p-0">
+              <SheetHeader className="p-6 border-b text-left">
+                <SheetTitle className="text-primary flex items-center gap-2">
+                  <Microscope className="h-6 w-6" /> CEEMTS Menu
+                </SheetTitle>
+              </SheetHeader>
+              <ScrollArea className="h-[calc(100vh-80px)] p-6">
+                <nav className="flex flex-col gap-6">
+                  <Link href="/" className="text-lg font-bold text-primary">Accueil</Link>
+                  {sections.map((section) => (
+                    <div key={section.title} className="flex flex-col gap-3">
+                      <h4 className="text-xs font-bold uppercase text-secondary tracking-widest">{section.title}</h4>
+                      <div className="flex flex-col gap-2 pl-4 border-l-2 border-muted">
+                        {section.items.map((item) => (
+                          <Link key={item.title} href={item.href} className="text-base hover:text-primary transition-colors py-1">
+                            {item.title}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex flex-col gap-4">
+                    <Link href="/formations" className="text-lg font-bold text-primary">Formations</Link>
+                    <Link href="/partenaires" className="text-lg font-bold text-primary">Partenaires</Link>
+                    <Link href="/mediatheque" className="text-lg font-bold text-primary">Médiathèque</Link>
+                    <Link href="/contact" className="text-lg font-bold text-primary">Contact</Link>
                   </div>
-                ))}
-                <Link href="/formations" className="text-lg font-bold text-primary">Formations</Link>
-                <Link href="/partenaires" className="text-lg font-bold text-primary">Partenaires</Link>
-                <Link href="/mediatheque" className="text-lg font-bold text-primary">Médiathèque</Link>
-                <Link href="/contact" className="text-lg font-bold text-primary">Contact</Link>
-                <Button className="mt-4 bg-secondary text-primary font-bold" asChild>
-                  <Link href="/admin/login">Admin Dashboard</Link>
-                </Button>
-              </nav>
+                  <Button className="mt-4 bg-secondary text-primary font-bold w-full" asChild>
+                    <Link href="/admin/login">Admin Dashboard</Link>
+                  </Button>
+                </nav>
+              </ScrollArea>
             </SheetContent>
           </Sheet>
         </div>
@@ -176,9 +188,11 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-bold leading-none text-primary">{title}</div>
-          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
-            {children}
-          </p>
+          {children && (
+            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
+              {children}
+            </p>
+          )}
         </Link>
       </NavigationMenuLink>
     </li>

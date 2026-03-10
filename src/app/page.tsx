@@ -55,7 +55,7 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-[85vh] flex items-center overflow-hidden">
+        <section className="relative min-h-[85vh] lg:h-[85vh] flex items-center overflow-hidden py-20 lg:py-0">
           <Image
             src={heroImg?.imageUrl || ""}
             alt="CEEMTS Background"
@@ -64,8 +64,8 @@ export default function Home() {
             priority
             data-ai-hint="economics university research"
           />
-          <div className="container relative z-10 text-white space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-sm font-semibold mb-4 backdrop-blur-sm">
+          <div className="container relative z-10 text-white space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 px-4">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-xs sm:text-sm font-semibold mb-2 backdrop-blur-sm">
               <Award className="h-4 w-4 mr-2" />
               Recherche & Management de Demain
             </div>
@@ -73,19 +73,19 @@ export default function Home() {
               <div className="h-20 flex items-center"><Loader2 className="w-10 h-10 animate-spin text-secondary" /></div>
             ) : content && (
               <>
-                <h1 className="text-5xl md:text-7xl font-bold font-headline leading-tight max-w-4xl">
+                <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-headline leading-tight max-w-4xl">
                   {content.heroTitle}
                 </h1>
-                <p className="text-xl md:text-2xl text-gray-200 max-w-2xl leading-relaxed font-light">
+                <p className="text-base sm:text-xl md:text-2xl text-gray-200 max-w-2xl leading-relaxed font-light">
                   {content.heroSubtitle}
                 </p>
               </>
             )}
-            <div className="flex flex-wrap gap-4 pt-4">
-              <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-primary font-bold px-8 h-14" asChild>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-primary font-bold px-8 h-12 sm:h-14 w-full sm:w-auto" asChild>
                 <Link href="/adhesion">Nous Rejoindre <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-white border-secondary bg-secondary/20 hover:bg-secondary/30 px-8 h-14" asChild>
+              <Button size="lg" variant="outline" className="text-white border-secondary bg-secondary/20 hover:bg-secondary/30 px-8 h-12 sm:h-14 w-full sm:w-auto" asChild>
                 <Link href="/evenements">Événements Scientifiques</Link>
               </Button>
             </div>
@@ -93,8 +93,8 @@ export default function Home() {
         </section>
 
         {/* Stats Section */}
-        <section className="bg-primary py-12">
-          <div className="container grid grid-cols-2 md:grid-cols-4 gap-8">
+        <section className="bg-primary py-12 lg:py-16">
+          <div className="container grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 px-4">
             {[
               { label: "Chercheurs", value: "350+", icon: Users },
               { label: "Publications", value: "800+", icon: BookOpen },
@@ -102,20 +102,20 @@ export default function Home() {
               { label: "Expertises", value: "100+", icon: Microscope },
             ].map((stat, idx) => (
               <div key={idx} className="flex flex-col items-center text-center space-y-2">
-                <stat.icon className="text-secondary h-8 w-8 mb-2" />
-                <span className="text-3xl font-bold text-white">{stat.value}</span>
-                <span className="text-gray-400 text-sm uppercase tracking-wider">{stat.label}</span>
+                <stat.icon className="text-secondary h-6 w-6 sm:h-8 sm:w-8 mb-1" />
+                <span className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</span>
+                <span className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wider">{stat.label}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* Mission / Word from Director */}
-        <section className="py-24 bg-white" id="directeur">
-          <div className="container grid md:grid-cols-2 gap-16 items-center">
-            <div className="relative group">
-              <div className="absolute -inset-4 bg-secondary/20 rounded-2xl group-hover:bg-secondary/30 transition-colors -rotate-2"></div>
-              <div className="relative h-[600px] rounded-xl overflow-hidden shadow-2xl">
+        <section className="py-16 sm:py-24 bg-white" id="directeur">
+          <div className="container grid md:grid-cols-2 gap-10 lg:gap-16 items-center px-4">
+            <div className="relative group order-2 md:order-1">
+              <div className="absolute -inset-2 sm:-inset-4 bg-secondary/20 rounded-2xl group-hover:bg-secondary/30 transition-colors -rotate-1 sm:-rotate-2"></div>
+              <div className="relative h-[350px] sm:h-[500px] lg:h-[600px] rounded-xl overflow-hidden shadow-2xl">
                 <Image
                   src={directorImg?.imageUrl || ""}
                   alt="Directeur CEEMTS"
@@ -125,12 +125,12 @@ export default function Home() {
                 />
               </div>
             </div>
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8 order-1 md:order-2">
               <div className="inline-block p-3 bg-secondary/10 rounded-lg">
-                <GraduationCap className="h-8 w-8 text-secondary" />
+                <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-secondary" />
               </div>
-              <h2 className="text-4xl font-bold text-primary font-headline">Mot du Directeur</h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed text-lg italic">
+              <h2 className="text-3xl sm:text-4xl font-bold text-primary font-headline">Mot du Directeur</h2>
+              <div className="space-y-4 text-gray-600 leading-relaxed text-base sm:text-lg italic">
                 <p>
                   "Bienvenue au CEEMTS. Notre mission est d'étudier les dynamiques économiques et managériales 
                   pour mieux comprendre et accompagner les transformations sociétales majeures."
@@ -139,28 +139,28 @@ export default function Home() {
                   "Nous croyons en une science ouverte, rigoureuse et ancrée dans les réalités de notre temps."
                 </p>
               </div>
-              <div className="pt-4">
-                <p className="font-bold text-primary text-xl">Pr. Ahmed Alami</p>
+              <div className="pt-2">
+                <p className="font-bold text-primary text-lg sm:text-xl">Pr. Ahmed Alami</p>
                 <p className="text-secondary font-medium">Directeur, CEEMTS</p>
               </div>
-              <Button variant="link" className="p-0 text-primary font-bold text-lg hover:text-secondary h-auto" asChild>
-                <Link href="/a-propos">Découvrir notre vision <ArrowRight className="ml-2 h-5 w-5" /></Link>
+              <Button variant="link" className="p-0 text-primary font-bold text-base sm:text-lg hover:text-secondary h-auto" asChild>
+                <Link href="/a-propos">Découvrir notre vision <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>
               </Button>
             </div>
           </div>
         </section>
 
         {/* Areas of Focus */}
-        <section className="py-24 bg-muted/50">
-          <div className="container space-y-16">
+        <section className="py-16 sm:py-24 bg-muted/50">
+          <div className="container space-y-12 sm:space-y-16 px-4">
             <div className="text-center space-y-4 max-w-3xl mx-auto">
-              <h2 className="text-4xl font-bold text-primary font-headline">Nos Piliers</h2>
-              <p className="text-gray-600 text-lg">
+              <h2 className="text-3xl sm:text-4xl font-bold text-primary font-headline">Nos Piliers</h2>
+              <p className="text-gray-600 text-base sm:text-lg">
                 Des axes stratégiques pour une recherche à fort impact social et économique.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
               {[
                 {
                   title: "Économie & Finance",
@@ -181,13 +181,13 @@ export default function Home() {
                   link: "/formations"
                 }
               ].map((pill, idx) => (
-                <div key={idx} className="bg-white p-10 rounded-2xl shadow-sm border hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center space-y-6">
-                  <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center text-primary transition-colors">
-                    <pill.icon size={32} />
+                <div key={idx} className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center space-y-4 sm:space-y-6">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/5 rounded-full flex items-center justify-center text-primary transition-colors">
+                    <pill.icon size={24} className="sm:size-8" />
                   </div>
-                  <h3 className="text-2xl font-bold text-primary">{pill.title}</h3>
-                  <p className="text-gray-500 leading-relaxed">{pill.desc}</p>
-                  <Button variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-white" asChild>
+                  <h3 className="text-xl sm:text-2xl font-bold text-primary">{pill.title}</h3>
+                  <p className="text-sm sm:text-base text-gray-500 leading-relaxed">{pill.desc}</p>
+                  <Button variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-white mt-auto" asChild>
                     <Link href={pill.link}>En savoir plus</Link>
                   </Button>
                 </div>
@@ -197,14 +197,14 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 bg-secondary">
-          <div className="container text-center space-y-8">
-            <h2 className="text-4xl font-bold text-primary font-headline">Rejoignez le CEEMTS</h2>
-            <p className="text-xl text-primary/80 max-w-2xl mx-auto">
+        <section className="py-16 sm:py-20 bg-secondary px-4">
+          <div className="container text-center space-y-6 sm:space-y-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-primary font-headline">Rejoignez le CEEMTS</h2>
+            <p className="text-lg sm:text-xl text-primary/80 max-w-2xl mx-auto">
               Participez activement au rayonnement de la recherche scientifique et bénéficiez d'un réseau d'experts internationaux.
             </p>
-            <div className="flex justify-center gap-4">
-              <Button size="lg" className="bg-primary text-white hover:bg-primary/90 px-10 h-14" asChild>
+            <div className="flex justify-center">
+              <Button size="lg" className="bg-primary text-white hover:bg-primary/90 px-10 h-12 sm:h-14 w-full sm:w-auto text-lg" asChild>
                 <Link href="/adhesion">Adhérer au centre</Link>
               </Button>
             </div>
