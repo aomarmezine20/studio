@@ -25,7 +25,7 @@ export default function AdminLoginPage() {
       await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue dans l'espace administration.",
+        description: "Bienvenue dans l'espace administration CEEMTS.",
       });
       router.push("/admin/dashboard");
     } catch (error: any) {
@@ -49,9 +49,9 @@ export default function AdminLoginPage() {
             </div>
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold font-headline">ScienceConnect Admin</CardTitle>
+            <CardTitle className="text-2xl font-bold font-headline">CEEMTS Administration</CardTitle>
             <CardDescription>
-              Veuillez vous authentifier pour accéder au tableau de bord.
+              Authentification requise pour la gestion du centre.
             </CardDescription>
           </div>
         </CardHeader>
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@scienceconnect.org"
+                placeholder="admin@ceemts.org"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -81,7 +81,7 @@ export default function AdminLoginPage() {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full h-11" disabled={loading}>
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Se connecter"}
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "S'identifier"}
             </Button>
           </CardFooter>
         </form>

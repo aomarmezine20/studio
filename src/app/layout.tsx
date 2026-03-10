@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export const metadata: Metadata = {
-  title: 'ScienceConnect | Association Scientifique pour la Recherche',
-  description: 'Portail institutionnel de ScienceConnect, promouvant la recherche scientifique, la formation et les publications académiques.',
+  title: 'CEEMTS | Centre d\'études en économie management et transformations sociétales',
+  description: 'Portail institutionnel du CEEMTS, promouvant la recherche d\'excellence en économie, management et transformations sociétales.',
 };
 
 export default function RootLayout({

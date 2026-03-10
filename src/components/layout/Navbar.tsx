@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -22,7 +21,7 @@ const sections = [
     title: "Identité",
     items: [
       { title: "Qui sommes-nous", href: "/a-propos" },
-      { title: "Mot du Directeur", href: "/#directeur" },
+      { title: "Mot du Directeur", href: "/a-propos" },
       { title: "Objectifs", href: "/a-propos#objectifs" },
       { title: "Gouvernance", href: "/gouvernance" },
     ],
@@ -44,14 +43,6 @@ const sections = [
       { title: "Rapports de Recherche", href: "/publications?cat=rapports" },
     ],
   },
-  {
-    title: "Expertise",
-    items: [
-      { title: "Annuaire des Experts", href: "/experts" },
-      { title: "Partenariats", href: "/#piliers" },
-      { title: "Adhésion", href: "/adhesion" },
-    ],
-  },
 ];
 
 export function Navbar() {
@@ -62,7 +53,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center space-x-2">
             <Microscope className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold tracking-tight text-primary font-headline">
-              Science<span className="text-secondary">Connect</span>
+              CEEMTS
             </span>
           </Link>
         </div>
@@ -72,7 +63,7 @@ export function Navbar() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link href="/" legacyBehavior passHref>
+                <Link href="/" asChild>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Accueil
                   </NavigationMenuLink>
@@ -94,15 +85,29 @@ export function Navbar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               ))}
+               <NavigationMenuItem>
+                <Link href="/formations" asChild>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Formations
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/mediatheque" legacyBehavior passHref>
+                <Link href="/partenaires" asChild>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Partenaires
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/mediatheque" asChild>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Médiathèque
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/contact" legacyBehavior passHref>
+                <Link href="/contact" asChild>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Contact
                   </NavigationMenuLink>
@@ -114,7 +119,7 @@ export function Navbar() {
 
         <div className="flex items-center space-x-2">
           <Button variant="default" size="sm" className="hidden sm:flex bg-secondary hover:bg-secondary/90 text-primary font-bold" asChild>
-            <Link href="/admin/login">Connexion Admin</Link>
+            <Link href="/admin/login">Espace Admin</Link>
           </Button>
           
           {/* Mobile Menu */}
@@ -138,6 +143,8 @@ export function Navbar() {
                     ))}
                   </div>
                 ))}
+                <Link href="/formations" className="text-lg font-bold text-primary">Formations</Link>
+                <Link href="/partenaires" className="text-lg font-bold text-primary">Partenaires</Link>
                 <Link href="/mediatheque" className="text-lg font-bold text-primary">Médiathèque</Link>
                 <Link href="/contact" className="text-lg font-bold text-primary">Contact</Link>
                 <Button className="mt-4 bg-secondary text-primary font-bold" asChild>
@@ -161,10 +168,12 @@ const ListItem = React.forwardRef<
       <NavigationMenuLink asChild>
         <Link
           href={props.href || "#"}
+          ref={ref}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className
           )}
+          {...props}
         >
           <div className="text-sm font-bold leading-none text-primary">{title}</div>
           <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
