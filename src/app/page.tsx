@@ -16,15 +16,6 @@ interface HomePageContent {
   heroSubtitle: string;
 }
 
-const HeroTitle = ({ title }: { title: string }) => {
-    return (
-      <h1 className="text-5xl md:text-7xl font-bold font-headline leading-tight max-w-4xl">
-        {title.includes("CEEMTS") ? title.replace("CEEMTS", `<span className="text-secondary">CEEMTS</span>`) : title}
-      </h1>
-    );
-};
-
-
 export default function Home() {
   const heroImg = PlaceHolderImages.find(img => img.id === 'hero-bg');
   const directorImg = PlaceHolderImages.find(img => img.id === 'director');
@@ -33,6 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchContent = async () => {
+      if (typeof window === 'undefined') return;
       setLoading(true);
       try {
         const docRef = doc(db, 'singleContent', 'homepage');
@@ -77,7 +69,9 @@ export default function Home() {
               <Award className="h-4 w-4 mr-2" />
               Recherche & Management de Demain
             </div>
-            {loading ? <Loader2 className="w-12 h-12 animate-spin" /> : content && (
+            {loading ? (
+              <div className="h-20 flex items-center"><Loader2 className="w-10 h-10 animate-spin text-secondary" /></div>
+            ) : content && (
               <>
                 <h1 className="text-5xl md:text-7xl font-bold font-headline leading-tight max-w-4xl">
                   {content.heroTitle}

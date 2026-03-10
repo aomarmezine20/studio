@@ -2,38 +2,36 @@
 
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore';
+import { firebaseConfig } from './config';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
-
-// IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
-  if (!getApps().length) {
-    let firebaseApp;
-    try {
-      // Attempt to initialize via Firebase App Hosting environment variables
-      firebaseApp = initializeApp();
-    } catch (e) {
-      // Only warn in production because it's normal to use the firebaseConfig to initialize
-      // during development
-      if (process.env.NODE_ENV === "production") {
-        console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
-      }
-      firebaseApp = initializeApp(firebaseConfig);
-    }
-
-    return getSdks(firebaseApp);
+  if (typeof window === 'undefined') {
+    // Return mock SDKs for SSR/Build time to prevent errors
+    return {
+      firebaseApp: null as any,
+      auth: null as any,
+      firestore: null as any,
+    };
   }
 
-  // If already initialized, return the SDKs with the already initialized App
-  return getSdks(getApp());
+  let app: FirebaseApp;
+  if (!getApps().length) {
+    try {
+      // Attempt to initialize via Firebase App Hosting environment variables
+      app = initializeApp();
+    } catch (e) {
+      // Fallback to config object if the above fails (e.g., local development)
+      if (!firebaseConfig.apiKey) {
+        console.warn('Firebase configuration is missing. Ensure NEXT_PUBLIC_FIREBASE_API_KEY is set.');
+      }
+      app = initializeApp(firebaseConfig);
+    }
+  } else {
+    app = getApp();
+  }
+
+  return getSdks(app);
 }
 
 export function getSdks(firebaseApp: FirebaseApp) {
