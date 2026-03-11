@@ -2,18 +2,19 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  NavigationMenuContent,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Menu, Microscope } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -51,9 +52,17 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-20 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center space-x-2">
-            <Microscope className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
-            <span className="text-lg sm:text-xl font-bold tracking-tight text-primary font-headline">
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative h-12 w-12 overflow-hidden rounded-md">
+              <Image 
+                src="/logo.jpg" 
+                alt="CEEMTS Logo" 
+                fill 
+                className="object-contain"
+                priority
+              />
+            </div>
+            <span className="hidden sm:block text-lg font-bold tracking-tight text-primary font-headline leading-none">
               CEEMTS
             </span>
           </Link>
@@ -133,8 +142,11 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[85vw] sm:w-[400px] p-0 flex flex-col">
               <SheetHeader className="p-6 border-b text-left shrink-0">
-                <SheetTitle className="text-primary flex items-center gap-2">
-                  <Microscope className="h-6 w-6" /> CEEMTS Menu
+                <SheetTitle className="text-primary flex items-center gap-3">
+                  <div className="relative h-10 w-10">
+                    <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
+                  </div>
+                  CEEMTS Menu
                 </SheetTitle>
               </SheetHeader>
               <ScrollArea className="flex-1 p-6">

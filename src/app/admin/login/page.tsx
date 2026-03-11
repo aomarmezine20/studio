@@ -4,11 +4,12 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Microscope, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminLoginPage() {
@@ -44,8 +45,8 @@ export default function AdminLoginPage() {
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="space-y-4 text-center">
           <div className="flex justify-center">
-            <div className="p-3 bg-primary rounded-xl">
-              <Microscope className="h-8 w-8 text-secondary" />
+            <div className="relative h-20 w-20 overflow-hidden rounded-xl bg-white shadow-sm border p-2">
+              <Image src="/logo.jpg" alt="CEEMTS Logo" fill className="object-contain" />
             </div>
           </div>
           <div>

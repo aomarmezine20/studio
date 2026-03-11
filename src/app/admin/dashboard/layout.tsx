@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import Image from "next/image";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarGroupLabel, SidebarGroupContent } from "@/components/ui/sidebar";
-import { LayoutDashboard, FileText, Calendar, BookOpen, Image as ImageIcon, Users, LogOut, Globe, Microscope, Settings, Info, MessageSquare, Building, GraduationCap } from "lucide-react";
+import { LayoutDashboard, FileText, Calendar, BookOpen, Image as ImageIcon, Users, LogOut, Globe, Info, MessageSquare, Building, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -49,11 +50,11 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
       <div className="flex h-screen w-full overflow-hidden bg-muted/30">
         <Sidebar className="border-r shadow-sm">
           <SidebarHeader className="p-4 border-b">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="p-1.5 bg-primary rounded-lg text-secondary group-hover:scale-110 transition-transform">
-                <Microscope size={20} />
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-white p-1 border group-hover:scale-110 transition-transform">
+                <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
               </div>
-              <span className="font-bold text-primary text-lg">CEEMTS Admin</span>
+              <span className="font-bold text-primary text-lg truncate">CEEMTS Admin</span>
             </Link>
           </SidebarHeader>
           <SidebarContent>

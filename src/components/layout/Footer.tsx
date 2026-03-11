@@ -1,13 +1,16 @@
 import Link from "next/link";
-import { Microscope, Mail, Phone, MapPin, Facebook, Twitter, Linkedin } from "lucide-react";
+import Image from "next/image";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
     <footer className="bg-primary text-white pt-16 pb-8">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
         <div className="space-y-6">
-          <Link href="/" className="flex items-center space-x-2">
-            <Microscope className="h-8 w-8 text-secondary" />
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative h-10 w-10 overflow-hidden rounded-md bg-white p-1">
+              <Image src="/logo.jpg" alt="CEEMTS" fill className="object-contain" />
+            </div>
             <span className="text-2xl font-bold font-headline">CEEMTS</span>
           </Link>
           <p className="text-gray-300 text-sm leading-relaxed">
