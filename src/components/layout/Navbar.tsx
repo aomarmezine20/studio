@@ -50,10 +50,10 @@ const sections = [
 export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-20 items-center justify-between px-4">
+      <div className="container flex h-24 items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center space-x-3">
-            <div className="relative h-12 w-12 overflow-hidden rounded-md">
+            <div className="relative h-16 w-16 overflow-hidden rounded-md">
               <Image 
                 src="/logo.jpg" 
                 alt="CEEMTS Logo" 
@@ -62,9 +62,14 @@ export function Navbar() {
                 priority
               />
             </div>
-            <span className="hidden sm:block text-lg font-bold tracking-tight text-primary font-headline leading-none">
-              CEEMTS
-            </span>
+            <div className="flex flex-col">
+              <span className="hidden sm:block text-xl font-bold tracking-tight text-primary font-headline leading-none">
+                CEEMTS
+              </span>
+              <span className="hidden md:block text-[10px] text-muted-foreground uppercase font-medium mt-1">
+                Centre d'études en économie management
+              </span>
+            </div>
           </Link>
         </div>
 
@@ -129,7 +134,7 @@ export function Navbar() {
 
         <div className="flex items-center space-x-2">
           <Button variant="default" size="sm" className="hidden sm:flex bg-secondary hover:bg-secondary/90 text-primary font-bold" asChild>
-            <Link href="/admin/login">Espace Admin</Link>
+            <Link href="/admin/login">Admin</Link>
           </Button>
           
           {/* Mobile Menu */}
@@ -143,10 +148,10 @@ export function Navbar() {
             <SheetContent side="right" className="w-[85vw] sm:w-[400px] p-0 flex flex-col">
               <SheetHeader className="p-6 border-b text-left shrink-0">
                 <SheetTitle className="text-primary flex items-center gap-3">
-                  <div className="relative h-10 w-10">
+                  <div className="relative h-14 w-14">
                     <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
                   </div>
-                  CEEMTS Menu
+                  CEEMTS
                 </SheetTitle>
               </SheetHeader>
               <ScrollArea className="flex-1 p-6">

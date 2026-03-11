@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="space-y-4 text-center">
           <div className="flex justify-center">
-            <div className="relative h-20 w-20 overflow-hidden rounded-xl bg-white shadow-sm border p-2">
+            <div className="relative h-32 w-32 overflow-hidden rounded-xl bg-white shadow-sm border p-2">
               <Image src="/logo.jpg" alt="CEEMTS Logo" fill className="object-contain" />
             </div>
           </div>

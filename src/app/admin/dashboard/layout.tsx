@@ -51,7 +51,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
         <Sidebar className="border-r shadow-sm">
           <SidebarHeader className="p-4 border-b">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-white p-1 border group-hover:scale-110 transition-transform">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-white p-1 border group-hover:scale-110 transition-transform">
                 <Image src="/logo.jpg" alt="Logo" fill className="object-contain" />
               </div>
               <span className="font-bold text-primary text-lg truncate">CEEMTS Admin</span>
