@@ -1,8 +1,9 @@
+'use client';
+
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
-import Link from "next/link";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
