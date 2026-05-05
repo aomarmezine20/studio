@@ -81,7 +81,6 @@ export default function MembershipPage() {
         "Logo sur nos supports de communication",
         "Organisation d'événements conjoints"
       ]
-      ]
     }
   ];
 
