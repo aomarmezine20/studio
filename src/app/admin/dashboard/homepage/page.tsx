@@ -38,6 +38,7 @@ const HomepageAdminPage = () => {
           });
         }
       } catch (error) {
+        console.error("Error fetching homepage content:", error);
         toast({ title: "Erreur", description: "Impossible de charger les données de la page d'accueil.", variant: "destructive" });
       } finally {
         setLoading(false);
