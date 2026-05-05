@@ -1,8 +1,42 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export function Footer() {
+  const [settings, setSettings] = useState({
+    address: "CEEMTS, Casablanca, Maroc",
+    phone: "+212 (0) 5XX XX XX XX",
+    email: "contact@ceemts.org",
+    facebook: "#",
+    twitter: "#",
+    linkedin: "#"
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'singleContent', 'settings');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSettings({
+            address: data.address || settings.address,
+            phone: data.phone || settings.phone,
+            email: data.email || settings.email,
+            facebook: data.facebook || settings.facebook,
+            twitter: data.twitter || settings.twitter,
+            linkedin: data.linkedin || settings.linkedin
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
   return (
     <footer className="bg-primary text-white pt-16 pb-8">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -18,9 +52,9 @@ export function Footer() {
             Promouvoir la recherche d'excellence et la diffusion du savoir académique.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="hover:text-secondary transition-colors"><Facebook size={20} /></a>
-            <a href="#" className="hover:text-secondary transition-colors"><Twitter size={20} /></a>
-            <a href="#" className="hover:text-secondary transition-colors"><Linkedin size={20} /></a>
+            <a href={settings.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors"><Facebook size={20} /></a>
+            <a href={settings.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors"><Twitter size={20} /></a>
+            <a href={settings.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors"><Linkedin size={20} /></a>
           </div>
         </div>
 
@@ -49,15 +83,15 @@ export function Footer() {
           <ul className="space-y-4 text-gray-300 text-sm">
             <li className="flex items-start space-x-3">
               <MapPin className="text-secondary shrink-0" size={18} />
-              <span>CEEMTS, Casablanca, Maroc</span>
+              <span>{settings.address}</span>
             </li>
             <li className="flex items-center space-x-3">
               <Phone className="text-secondary shrink-0" size={18} />
-              <span>+212 (0) 5XX XX XX XX</span>
+              <span>{settings.phone}</span>
             </li>
             <li className="flex items-center space-x-3">
               <Mail className="text-secondary shrink-0" size={18} />
-              <span>contact@ceemts.org</span>
+              <span>{settings.email}</span>
             </li>
           </ul>
         </div>

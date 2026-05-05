@@ -147,8 +147,10 @@ export default function EvenementsAdminPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="location">Lieu / Lien virtuel</Label>
-                            <Input id="location" value={location} onChange={e => setLocation(e.target.value)} required />
+                            <Label htmlFor="location">
+                                {category === 'Webinaires' ? 'Lien de connexion (Zoom, Meet, etc.)' : 'Localisation (Adresse physique)'}
+                            </Label>
+                            <Input id="location" value={location} onChange={e => setLocation(e.target.value)} placeholder={category === 'Webinaires' ? 'https://zoom.us/j/...' : 'Ex: 123 Rue de Paris...'} required />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="description">Description</Label>

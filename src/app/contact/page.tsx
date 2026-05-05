@@ -1,9 +1,54 @@
+'use client';
+
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ContactForm } from "@/components/contact/ContactForm";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function ContactPage() {
+  const [settings, setSettings] = useState({
+    address: "CEEMTS, Casablanca, Maroc",
+    phone: "+212 (0) 5XX XX XX XX",
+    email: "contact@ceemts.org"
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'singleContent', 'settings');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSettings({
+            address: data.address || "CEEMTS, Casablanca, Maroc",
+            phone: data.phone || "+212 (0) 5XX XX XX XX",
+            email: data.email || "contact@ceemts.org"
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center min-h-[50vh]">
+          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </>
+    );
+  }
   return (
     <>
       <Navbar />
@@ -30,7 +75,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-primary">Adresse</h4>
-                      <p className="text-muted-foreground">123 Avenue de la Recherche<br />75005 Paris, France</p>
+                      <p className="text-muted-foreground whitespace-pre-line">{settings.address}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -39,7 +84,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-primary">Téléphone</h4>
-                      <p className="text-muted-foreground">+33 1 23 45 67 89</p>
+                      <p className="text-muted-foreground">{settings.phone}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -48,7 +93,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-primary">Email</h4>
-                      <p className="text-muted-foreground">contact@scienceconnect.org</p>
+                      <p className="text-muted-foreground">{settings.email}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">

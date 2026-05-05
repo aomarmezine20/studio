@@ -7,12 +7,25 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Shield, User as UserIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Loader2, Shield, User as UserIcon, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function UsersAdminPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  
+  // New User Form State
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("admin");
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -44,11 +57,75 @@ export default function UsersAdminPage() {
     }
   };
 
+  const handleAddUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    try {
+      await addDoc(collection(db, "users"), {
+        name,
+        email,
+        role,
+        status: "active",
+        createdAt: serverTimestamp()
+      });
+      toast({ title: "Succès", description: "Utilisateur ajouté avec succès" });
+      setIsDialogOpen(false);
+      setName("");
+      setEmail("");
+      setRole("admin");
+      fetchUsers();
+    } catch (error) {
+      toast({ title: "Erreur", description: "Impossible d'ajouter l'utilisateur", variant: "destructive" });
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-primary font-headline">Gestion des Utilisateurs</h1>
-        <p className="text-muted-foreground">Administrateurs et gestionnaires de contenu.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-primary font-headline">Gestion des Utilisateurs</h1>
+          <p className="text-muted-foreground">Administrateurs et gestionnaires de contenu.</p>
+        </div>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2"><Plus size={20} /> Ajouter un Utilisateur</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Ajouter un nouvel utilisateur</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleAddUser} className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Nom complet</Label>
+                <Input id="name" value={name} onChange={e => setName(e.target.value)} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Adresse Email</Label>
+                <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="role">Rôle</Label>
+                <Select value={role} onValueChange={setRole} required>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Administrateur</SelectItem>
+                    <SelectItem value="editor">Éditeur</SelectItem>
+                    <SelectItem value="viewer">Observateur</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Annuler</Button>
+                <Button type="submit" disabled={formLoading}>
+                  {formLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Ajouter
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Card>

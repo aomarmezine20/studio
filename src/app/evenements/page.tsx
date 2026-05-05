@@ -7,7 +7,7 @@ import { useCollection, useMemoFirebase, useFirestore } from "@/firebase";
 import { collection, query, orderBy, where } from "firebase/firestore";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Loader2, Search, FilterX } from "lucide-react";
+import { Calendar, MapPin, Loader2, Search, FilterX, Link as LinkIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
@@ -88,8 +88,19 @@ function EventsContent() {
                       {event.date}
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-secondary" />
-                      {event.location}
+                      {event.category === 'Webinaires' ? (
+                        <>
+                          <LinkIcon size={14} className="text-secondary" />
+                          <a href={event.location.startsWith('http') ? event.location : `https://${event.location}`} target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline truncate">
+                            {event.location}
+                          </a>
+                        </>
+                      ) : (
+                        <>
+                          <MapPin size={14} className="text-secondary" />
+                          <span className="truncate">{event.location}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <p className="text-sm line-clamp-3 text-gray-600">

@@ -15,6 +15,8 @@ import Image from "next/image";
 const DirectorMessagePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [directorName, setDirectorName] = useState("");
+  const [directorRole, setDirectorRole] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -35,6 +37,8 @@ const DirectorMessagePage = () => {
           const data = docSnap.data();
           setTitle(data.title || "");
           setContent(data.content || "");
+          setDirectorName(data.directorName || "");
+          setDirectorRole(data.directorRole || "");
           setExistingImageUrl(data.imageUrl || null);
           setImagePreview(data.imageUrl || null);
           setExistingImagePath(data.imagePath || null);
@@ -87,6 +91,8 @@ const DirectorMessagePage = () => {
       const dataToSave = {
         title,
         content,
+        directorName,
+        directorRole,
         imageUrl,
         imagePath,
         updatedAt: serverTimestamp(),
@@ -134,6 +140,17 @@ const DirectorMessagePage = () => {
             rows={12}
             required
           />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="directorName">Nom du directeur</Label>
+            <Input id="directorName" value={directorName} onChange={e => setDirectorName(e.target.value)} required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="directorRole">Fonction / Rôle</Label>
+            <Input id="directorRole" value={directorRole} onChange={e => setDirectorRole(e.target.value)} required />
+          </div>
         </div>
 
         <div className="space-y-4">

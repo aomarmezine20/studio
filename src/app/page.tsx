@@ -16,10 +16,19 @@ interface HomePageContent {
   heroSubtitle: string;
 }
 
+interface DirectorMessage {
+  title?: string;
+  content?: string;
+  imageUrl?: string;
+  directorName?: string;
+  directorRole?: string;
+}
+
 export default function Home() {
   const heroImg = PlaceHolderImages.find(img => img.id === 'hero-bg');
   const directorImg = PlaceHolderImages.find(img => img.id === 'director');
   const [content, setContent] = useState<HomePageContent | null>(null);
+  const [directorMsg, setDirectorMsg] = useState<DirectorMessage | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,15 +36,22 @@ export default function Home() {
       if (typeof window === 'undefined') return;
       setLoading(true);
       try {
-        const docRef = doc(db, 'singleContent', 'homepage');
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setContent(docSnap.data() as HomePageContent);
+        const [homeSnap, dirSnap] = await Promise.all([
+          getDoc(doc(db, 'singleContent', 'homepage')),
+          getDoc(doc(db, 'singleContent', 'directorMessage'))
+        ]);
+
+        if (homeSnap.exists()) {
+          setContent(homeSnap.data() as HomePageContent);
         } else {
            setContent({
             heroTitle: "L'excellence au service des transformations sociétales",
             heroSubtitle: "Le CEEMTS réunit les meilleurs chercheurs et experts pour promouvoir l'innovation académique et le progrès économique."
           });
+        }
+
+        if (dirSnap.exists()) {
+          setDirectorMsg(dirSnap.data() as DirectorMessage);
         }
       } catch (error) {
         console.error("Failed to fetch homepage content:", error);
@@ -117,7 +133,7 @@ export default function Home() {
               <div className="absolute -inset-2 sm:-inset-4 bg-secondary/20 rounded-2xl group-hover:bg-secondary/30 transition-colors -rotate-1 sm:-rotate-2"></div>
               <div className="relative h-[350px] sm:h-[500px] lg:h-[600px] rounded-xl overflow-hidden shadow-2xl">
                 <Image
-                  src={directorImg?.imageUrl || ""}
+                  src={directorMsg?.imageUrl || directorImg?.imageUrl || ""}
                   alt="Directeur CEEMTS"
                   fill
                   className="object-cover"
@@ -129,19 +145,25 @@ export default function Home() {
               <div className="inline-block p-3 bg-secondary/10 rounded-lg">
                 <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-secondary" />
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-primary font-headline">Mot du Directeur</h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed text-base sm:text-lg italic">
-                <p>
-                  "Bienvenue au CEEMTS. Notre mission est d'étudier les dynamiques économiques et managériales 
-                  pour mieux comprendre et accompagner les transformations sociétales majeures."
-                </p>
-                <p>
-                  "Nous croyons en une science ouverte, rigoureuse et ancrée dans les réalités de notre temps."
-                </p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-primary font-headline">{directorMsg?.title || "Mot du Directeur"}</h2>
+              <div className="space-y-4 text-gray-600 leading-relaxed text-base sm:text-lg italic whitespace-pre-line">
+                {directorMsg?.content ? (
+                  <p>{directorMsg.content}</p>
+                ) : (
+                  <>
+                    <p>
+                      "Bienvenue au CEEMTS. Notre mission est d'étudier les dynamiques économiques et managériales 
+                      pour mieux comprendre et accompagner les transformations sociétales majeures."
+                    </p>
+                    <p>
+                      "Nous croyons en une science ouverte, rigoureuse et ancrée dans les réalités de notre temps."
+                    </p>
+                  </>
+                )}
               </div>
               <div className="pt-2">
-                <p className="font-bold text-primary text-lg sm:text-xl">Pr. Ahmed Alami</p>
-                <p className="text-secondary font-medium">Directeur, CEEMTS</p>
+                <p className="font-bold text-primary text-lg sm:text-xl">{directorMsg?.directorName || "Pr. Ahmed Alami"}</p>
+                <p className="text-secondary font-medium">{directorMsg?.directorRole || "Directeur, CEEMTS"}</p>
               </div>
               <Button variant="link" className="p-0 text-primary font-bold text-base sm:text-lg hover:text-secondary h-auto" asChild>
                 <Link href="/a-propos">Découvrir notre vision <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" /></Link>

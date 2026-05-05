@@ -3,9 +3,53 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { Loader2 } from "lucide-react";
+
+interface Plan {
+  name: string;
+  price: string;
+  featured?: boolean;
+  features: string[];
+}
 
 export default function MembershipPage() {
-  const plans = [
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [pageTitle, setPageTitle] = useState("Rejoindre le Réseau");
+  const [pageSubtitle, setPageSubtitle] = useState("Choisissez le niveau d'adhésion qui correspond à votre profil académique ou professionnel.");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const docRef = doc(db, 'singleContent', 'adhesion');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setPageTitle(data.pageTitle || "Rejoindre le Réseau");
+          setPageSubtitle(data.pageSubtitle || "Choisissez le niveau d'adhésion qui correspond à votre profil académique ou professionnel.");
+          if (data.plans && data.plans.length > 0) {
+            setPlans(data.plans);
+          } else {
+            setPlans(getDefaultPlans());
+          }
+        } else {
+          setPlans(getDefaultPlans());
+        }
+      } catch (error) {
+        console.error("Failed to fetch adhesion content:", error);
+        setPlans(getDefaultPlans());
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContent();
+  }, []);
+
+  const getDefaultPlans = () => [
     {
       name: "Étudiant / Doctorant",
       price: "25€ / an",
@@ -37,8 +81,21 @@ export default function MembershipPage() {
         "Logo sur nos supports de communication",
         "Organisation d'événements conjoints"
       ]
+      ]
     }
   ];
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center min-h-[50vh]">
+          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -46,9 +103,9 @@ export default function MembershipPage() {
       <main className="flex-grow bg-muted/30">
         <section className="bg-primary py-20 text-white">
           <div className="container text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold font-headline">Rejoindre le Réseau</h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Choisissez le niveau d'adhésion qui correspond à votre profil académique ou professionnel.
+            <h1 className="text-4xl md:text-5xl font-bold font-headline">{pageTitle}</h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto whitespace-pre-line">
+              {pageSubtitle}
             </p>
           </div>
         </section>
