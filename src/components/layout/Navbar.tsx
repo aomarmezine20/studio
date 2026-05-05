@@ -23,7 +23,7 @@ const sections = [
     title: "Identité",
     items: [
       { title: "Qui sommes-nous", href: "/a-propos" },
-      { title: "Mot du Directeur", href: "/a-propos" },
+      { title: "Mot du Directeur", href: "/a-propos#mot-du-directeur" },
       { title: "Objectifs", href: "/a-propos#objectifs" },
       { title: "Gouvernance", href: "/gouvernance" },
     ],

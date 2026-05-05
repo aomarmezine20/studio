@@ -48,7 +48,7 @@ function DirectorMessage() {
   }
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section className="py-20 bg-muted/30" id="mot-du-directeur">
       <div className="container">
         <div className="grid md:grid-cols-3 gap-12 items-center">
           <div className="relative w-full h-80 md:h-full rounded-2xl overflow-hidden shadow-xl min-h-[300px]">
