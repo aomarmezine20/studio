@@ -9,7 +9,7 @@ import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarFooter,
 import { LayoutDashboard, FileText, Calendar, BookOpen, Image as ImageIcon, Users, LogOut, Globe, Info, MessageSquare, Building, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Settings, FilePlus } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
@@ -141,6 +141,16 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
                   <SidebarMenuItem>
                     <Link href="/admin/dashboard/users" asChild>
                       <SidebarMenuButton tooltip="Admins"><Users /><span>Utilisateurs</span></SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <Link href="/admin/dashboard/adhesion" asChild>
+                      <SidebarMenuButton tooltip="Adhésion"><FilePlus /><span>Adhésion</span></SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <Link href="/admin/dashboard/settings" asChild>
+                      <SidebarMenuButton tooltip="Paramètres"><Settings /><span>Paramètres</span></SidebarMenuButton>
                     </Link>
                   </SidebarMenuItem>
                 </SidebarMenu>
