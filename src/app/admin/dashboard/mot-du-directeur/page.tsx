@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, UploadCloud } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+import imageCompression from "browser-image-compression";
 
 const DirectorMessagePage = () => {
   const [title, setTitle] = useState("");
@@ -81,10 +82,18 @@ const DirectorMessagePage = () => {
           }
         }
         
+        // Compress image before upload
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1024,
+          useWebWorker: true,
+        };
+        const compressedFile = await imageCompression(imageFile, options);
+        
         // Upload new image
-        imagePath = `director/${Date.now()}-${imageFile.name}`;
+        imagePath = `director/${Date.now()}-${compressedFile.name || 'image.jpg'}`;
         const storageRef = ref(storage, imagePath);
-        await uploadBytes(storageRef, imageFile);
+        await uploadBytes(storageRef, compressedFile);
         imageUrl = await getDownloadURL(storageRef);
       }
 

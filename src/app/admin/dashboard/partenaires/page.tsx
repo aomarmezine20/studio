@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Plus, Pencil, Trash2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+import imageCompression from "browser-image-compression";
 
 export default function PartnersAdminPage() {
   const [partners, setPartners] = useState<any[]>([]);
@@ -79,9 +80,17 @@ export default function PartnersAdminPage() {
       let logoPath = editingPartner?.logoPath || "";
 
       if (logoFile) {
-        logoPath = `partners/${Date.now()}-${logoFile.name}`;
+        // Compress image before upload
+        const options = {
+          maxSizeMB: 0.2,
+          maxWidthOrHeight: 512,
+          useWebWorker: true,
+        };
+        const compressedFile = await imageCompression(logoFile, options);
+
+        logoPath = `partners/${Date.now()}-${compressedFile.name || 'logo.png'}`;
         const storageRef = ref(storage, logoPath);
-        await uploadBytes(storageRef, logoFile);
+        await uploadBytes(storageRef, compressedFile);
         logoUrl = await getDownloadURL(storageRef);
       }
 
