@@ -75,7 +75,8 @@ function EventsContent() {
             <Loader2 className="animate-spin text-primary h-8 w-8" />
           </div>
         ) : filteredEvents && filteredEvents.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredEvents.map((event) => (
               <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow border-t-4 border-t-primary">
                 <CardHeader className="p-0 h-48 bg-primary/5 flex items-center justify-center relative">
@@ -174,6 +175,7 @@ function EventsContent() {
               )}
             </DialogContent>
           </Dialog>
+          </>
         ) : (
           <div className="text-center py-20 text-muted-foreground flex flex-col items-center gap-4">
             <FilterX size={48} className="opacity-20" />
