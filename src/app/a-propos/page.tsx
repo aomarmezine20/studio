@@ -87,6 +87,8 @@ interface ObjectiveItem {
 }
 
 interface AboutContent {
+  aboutHeaderTitle?: string;
+  aboutHeaderSubtitle?: string;
   aboutTitle?: string;
   mainDescription: string;
   aboutImageUrl?: string;
@@ -123,9 +125,11 @@ export default function AboutPage() {
       <main className="flex-grow">
         <section className="bg-primary py-20 text-white">
           <div className="container text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold font-headline">À Propos de ScienceConnect</h1>
+            <h1 className="text-4xl md:text-5xl font-bold font-headline">
+              {content?.aboutHeaderTitle || "À Propos de CEEMTS"}
+            </h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Une communauté d'experts dédiée au progrès scientifique et au partage des connaissances.
+              {content?.aboutHeaderSubtitle || "Une communauté d'experts dédiée au progrès scientifique et au partage des connaissances."}
             </p>
           </div>
         </section>

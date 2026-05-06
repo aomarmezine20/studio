@@ -16,6 +16,8 @@ interface HomePageContent {
   heroTitle: string;
   heroSubtitle: string;
   heroImageUrl?: string;
+  aboutHeaderTitle: string;
+  aboutHeaderSubtitle: string;
   aboutTitle: string;
   aboutDescription: string;
   aboutImageUrl?: string;
@@ -25,6 +27,8 @@ const HomepageAdminPage = () => {
   const [content, setContent] = useState<HomePageContent>({ 
     heroTitle: '', 
     heroSubtitle: '',
+    aboutHeaderTitle: '',
+    aboutHeaderSubtitle: '',
     aboutTitle: '',
     aboutDescription: ''
   });
@@ -58,6 +62,8 @@ const HomepageAdminPage = () => {
           const aboutData = aboutSnap.data();
           setContent(prev => ({ 
             ...prev, 
+            aboutHeaderTitle: aboutData.aboutHeaderTitle || "À Propos de CEEMTS",
+            aboutHeaderSubtitle: aboutData.aboutHeaderSubtitle || "Une communauté d'experts dédiée au progrès scientifique.",
             aboutTitle: aboutData.aboutTitle || "Qui sommes-nous ?", 
             aboutDescription: aboutData.mainDescription || "", 
             aboutImageUrl: aboutData.aboutImageUrl 
@@ -113,6 +119,8 @@ const HomepageAdminPage = () => {
           updatedAt: serverTimestamp() 
         }, { merge: true }),
         setDoc(aboutRef, { 
+          aboutHeaderTitle: content.aboutHeaderTitle,
+          aboutHeaderSubtitle: content.aboutHeaderSubtitle,
           aboutTitle: content.aboutTitle,
           mainDescription: content.aboutDescription,
           aboutImageUrl: content.aboutImageUrl,
@@ -181,7 +189,17 @@ const HomepageAdminPage = () => {
         </div>
 
         <div className="pt-8 border-t space-y-6">
-          <h2 className="text-xl font-bold">Section "Qui sommes-nous ?"</h2>
+          <h2 className="text-xl font-bold">Page "À Propos" (Entête)</h2>
+          <div className="space-y-2">
+            <Label htmlFor="aboutHeaderTitle">Titre de l'entête</Label>
+            <Input id="aboutHeaderTitle" value={content.aboutHeaderTitle} onChange={handleInputChange} required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="aboutHeaderSubtitle">Sous-titre de l'entête</Label>
+            <Input id="aboutHeaderSubtitle" value={content.aboutHeaderSubtitle} onChange={handleInputChange} required />
+          </div>
+
+          <h2 className="text-xl font-bold pt-4">Section "Qui sommes-nous ?"</h2>
           
           <div className="space-y-2">
             <Label htmlFor="aboutTitle">Titre</Label>
