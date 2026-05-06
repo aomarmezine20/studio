@@ -87,7 +87,9 @@ interface ObjectiveItem {
 }
 
 interface AboutContent {
+  aboutTitle?: string;
   mainDescription: string;
+  aboutImageUrl?: string;
   objectives: ObjectiveItem[];
 }
 
@@ -134,7 +136,9 @@ export default function AboutPage() {
           <div className="container grid lg:grid-cols-2 gap-12 items-center">
             {loading ? <Loader2 className="animate-spin text-primary" /> : 
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-primary font-headline" id="objectifs">Notre Mission</h2>
+              <h2 className="text-3xl font-bold text-primary font-headline" id="objectifs">
+                {content?.aboutTitle || "Notre Mission"}
+              </h2>
               <p className="text-muted-foreground leading-relaxed">
                 {content?.mainDescription}
               </p>
@@ -157,7 +161,7 @@ export default function AboutPage() {
             </div>}
             <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-xl">
               <Image 
-                src={heroImg?.imageUrl || ""} 
+                src={content?.aboutImageUrl || heroImg?.imageUrl || ""} 
                 alt="Research Team" 
                 fill 
                 className="object-cover"

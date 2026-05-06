@@ -14,6 +14,7 @@ import { doc, getDoc } from "firebase/firestore";
 interface HomePageContent {
   heroTitle: string;
   heroSubtitle: string;
+  heroImageUrl?: string;
 }
 
 interface DirectorMessage {
@@ -73,7 +74,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative min-h-[85vh] lg:h-[85vh] flex items-center overflow-hidden py-20 lg:py-0">
           <Image
-            src={heroImg?.imageUrl || ""}
+            src={content?.heroImageUrl || heroImg?.imageUrl || ""}
             alt="CEEMTS Background"
             fill
             className="object-cover brightness-[0.4]"
