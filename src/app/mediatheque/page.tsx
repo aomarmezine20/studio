@@ -17,10 +17,15 @@ export default function MediathequePublicPage() {
 
   const mediaQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, "media"), orderBy("createdAt", "desc"));
+    return query(collection(firestore, "media"));
   }, [firestore]);
 
-  const { data: mediaItems, isLoading } = useCollection(mediaQuery);
+  const { data: rawMedia, isLoading } = useCollection(mediaQuery);
+  const mediaItems = rawMedia ? [...rawMedia].sort((a: any, b: any) => {
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeB - timeA; // Descending
+  }) : null;
 
   const filteredMedia = mediaItems?.filter(item => {
     if (activeTab === "all") return true;

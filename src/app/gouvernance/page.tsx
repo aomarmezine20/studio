@@ -11,10 +11,15 @@ export default function GovernancePage() {
 
   const membersQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, "governance"), orderBy("createdAt", "asc"));
+    return query(collection(firestore, "governance"));
   }, [firestore]);
 
-  const { data: council, isLoading } = useCollection(membersQuery);
+  const { data: councilData, isLoading } = useCollection(membersQuery);
+  const council = councilData ? [...councilData].sort((a: any, b: any) => {
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeA - timeB;
+  }) : null;
 
   return (
     <>

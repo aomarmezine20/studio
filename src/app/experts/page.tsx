@@ -13,10 +13,15 @@ export default function ExpertsPage() {
 
   const expertsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, "experts"), orderBy("createdAt", "desc"));
+    return query(collection(firestore, "experts"));
   }, [firestore]);
 
-  const { data: experts, isLoading } = useCollection(expertsQuery);
+  const { data: rawExperts, isLoading } = useCollection(expertsQuery);
+  const experts = rawExperts ? [...rawExperts].sort((a: any, b: any) => {
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeB - timeA; // Descending
+  }) : null;
 
   return (
     <>

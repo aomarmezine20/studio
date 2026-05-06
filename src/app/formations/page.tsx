@@ -28,10 +28,17 @@ export default function FormationsPage() {
     const fetchFormations = async () => {
       setLoading(true);
       try {
-        const q = query(collection(db, 'formations'), orderBy('category'), orderBy('createdAt', 'desc'));
+        const q = query(collection(db, 'formations'));
         const querySnapshot = await getDocs(q);
         const formationsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Formation));
         
+        // Sort in memory
+        formationsList.sort((a: any, b: any) => {
+          const timeA = a.createdAt?.seconds || 0;
+          const timeB = b.createdAt?.seconds || 0;
+          return timeB - timeA; // Descending
+        });
+
         // Group formations by category
         const grouped = formationsList.reduce((acc, formation) => {
             const category = formation.category || 'Autres';

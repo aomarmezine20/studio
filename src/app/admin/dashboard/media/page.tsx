@@ -9,9 +9,10 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, Trash2, Image as ImageIcon, Video, FileText, ExternalLink } from "lucide-react";
+import { Loader2, Plus, Trash2, Image as ImageIcon, Video, FileText, ExternalLink, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+import imageCompression from "browser-image-compression";
 
 export default function MediaAdminPage() {
   const firestore = useFirestore();
@@ -24,6 +25,8 @@ export default function MediaAdminPage() {
   const [url, setUrl] = useState("");
   const [type, setType] = useState("image");
   const [altText, setAltText] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (firestore) fetchMedia();
@@ -42,14 +45,39 @@ export default function MediaAdminPage() {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const f = e.target.files[0];
+      setFile(f);
+      setPreview(URL.createObjectURL(f));
+    }
+  };
+
   const handleAddMedia = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!firestore) return;
     setFormLoading(true);
     try {
+      let finalUrl = url;
+
+      if (type === 'image' && file) {
+        // Compress and convert to Base64
+        const options = {
+          maxSizeMB: 0.1,
+          maxWidthOrHeight: 800,
+          useWebWorker: false,
+        };
+        const compressed = await imageCompression(file, options);
+        const reader = new FileReader();
+        finalUrl = await new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(compressed);
+        });
+      }
+
       await addDoc(collection(firestore, "media"), {
         fileName,
-        url,
+        url: finalUrl,
         type,
         altText,
         createdAt: serverTimestamp(),
@@ -59,6 +87,8 @@ export default function MediaAdminPage() {
       setFileName("");
       setUrl("");
       setAltText("");
+      setFile(null);
+      setPreview(null);
       fetchMedia();
     } catch (error) {
       toast({ title: "Erreur", description: "Une erreur est survenue", variant: "destructive" });
@@ -94,8 +124,12 @@ export default function MediaAdminPage() {
               <Input value={fileName} onChange={e => setFileName(e.target.value)} placeholder="Ex: Photo Colloque 2023" required />
             </div>
             <div className="space-y-2">
-              <Label>URL</Label>
-              <Input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://..." required />
+              <Label>{type === 'image' ? 'Uploader Image' : 'URL'}</Label>
+              {type === 'image' ? (
+                <Input type="file" onChange={handleFileChange} accept="image/*" required />
+              ) : (
+                <Input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://..." required />
+              )}
             </div>
             <div className="space-y-2">
               <Label>Type</Label>
@@ -106,7 +140,7 @@ export default function MediaAdminPage() {
                 <SelectContent>
                   <SelectItem value="image">Image</SelectItem>
                   <SelectItem value="video">Vidéo (Lien)</SelectItem>
-                  <SelectItem value="pdf">Document PDF</SelectItem>
+                  <SelectItem value="pdf">Document PDF (URL)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

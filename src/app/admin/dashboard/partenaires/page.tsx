@@ -82,16 +82,33 @@ export default function PartnersAdminPage() {
       if (logoFile) {
         // Compress image before upload
         const options = {
-          maxSizeMB: 0.2,
-          maxWidthOrHeight: 512,
-          useWebWorker: true,
+          maxSizeMB: 0.05, // Ultra-compressed (under 50KB)
+          maxWidthOrHeight: 400,
+          useWebWorker: false,
         };
+        console.log("Compressing partner logo...");
         const compressedFile = await imageCompression(logoFile, options);
+        console.log("Compressed. Size:", compressedFile.size);
 
-        logoPath = `partners/${Date.now()}-${compressedFile.name || 'logo.png'}`;
-        const storageRef = ref(storage, logoPath);
-        await uploadBytes(storageRef, compressedFile);
-        logoUrl = await getDownloadURL(storageRef);
+        // Convert to Base64
+        const reader = new FileReader();
+        const base64Promise = new Promise<string>((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(compressedFile);
+        });
+
+        logoUrl = await base64Promise;
+        logoPath = "base64";
+        console.log("Converted to Base64.");
+
+        // Cleanup old storage if needed
+        if (editingPartner?.logoPath && editingPartner?.logoPath !== "base64") {
+          try {
+            const oldRef = ref(storage, editingPartner.logoPath);
+            await deleteObject(oldRef);
+          } catch (e) { console.warn(e); }
+        }
       }
 
       const partnerData = { name, websiteUrl, logoUrl, logoPath, updatedAt: serverTimestamp() };

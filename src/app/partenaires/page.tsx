@@ -17,9 +17,16 @@ export default function PartnersPublicPage() {
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const q = query(collection(db, "partners"), orderBy("createdAt", "asc"));
+        const q = query(collection(db, "partners"));
         const snap = await getDocs(q);
-        setPartners(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Sort in memory to include docs with missing timestamps
+        data.sort((a: any, b: any) => {
+          const timeA = a.createdAt?.seconds || 0;
+          const timeB = b.createdAt?.seconds || 0;
+          return timeA - timeB;
+        });
+        setPartners(data);
       } catch (error) {
         console.error("Failed to fetch partners:", error);
       } finally {
