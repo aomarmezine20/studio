@@ -41,37 +41,48 @@ service cloud.firestore {
 
     match /articles/{articleId} {
       allow get, list: if true;
-      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
-      allow update, delete: if isExistingAdmin();
+      allow write: if isAdmin();
     }
 
     match /events/{eventId} {
       allow get, list: if true;
-      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
-      allow update, delete: if isExistingAdmin();
+      allow write: if isAdmin();
     }
 
     match /publications/{publicationId} {
       allow get, list: if true;
-      allow create: if isAdmin() && request.resource.data.createdBy == request.auth.uid;
-      allow update, delete: if isExistingAdmin();
+      allow write: if isAdmin();
     }
     
     match /media/{mediaId} {
-        allow get, list: if true;
-        allow create: if isAdmin();
-        allow update, delete: if isExistingAdmin();
+      allow get, list: if true;
+      allow write: if isAdmin();
+    }
+
+    match /formations/{id} {
+      allow get, list: if true;
+      allow write: if isAdmin();
+    }
+
+    match /governance/{id} {
+      allow get, list: if true;
+      allow write: if isAdmin();
+    }
+
+    match /experts/{id} {
+      allow get, list: if true;
+      allow write: if isAdmin();
     }
 
     match /contactMessages/{messageId} {
       allow get, list, update: if isAdmin();
       allow create: if true;
-      allow delete: if isExistingAdmin();
+      allow delete: if isAdmin();
     }
     
     match /singleContent/{docId} {
-        allow get: if true;
-        allow write: if isAdmin();
+      allow get: if true;
+      allow write: if isAdmin();
     }
 
     match /partners/{partnerId} {

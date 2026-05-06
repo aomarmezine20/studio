@@ -71,34 +71,38 @@ const DirectorMessagePage = () => {
 
       // Handle image upload if a new file is selected
       if (imageFile) {
-        // Delete old image if it exists
-        if (existingImagePath) {
-          try {
-            const oldImageRef = ref(storage, existingImagePath);
-            await deleteObject(oldImageRef);
-          } catch (deleteError) {
-             // If the old file doesn't exist, we can ignore the error
-            console.warn("Could not delete old image, it might not exist:", deleteError);
-          }
-        }
-        
         // Compress image before upload
         const options = {
-          maxSizeMB: 0.1, // Even more compressed for speed
-          maxWidthOrHeight: 800,
-          useWebWorker: false, // Disable web worker to avoid potential hangs in some browsers
+          maxSizeMB: 0.05, // Ultra-compressed for Firestore (under 100KB)
+          maxWidthOrHeight: 600,
+          useWebWorker: false,
         };
+        
         console.log("Compressing image...");
         const compressedFile = await imageCompression(imageFile, options);
         console.log("Image compressed. Size:", compressedFile.size);
         
-        // Upload new image
-        console.log("Uploading to Storage...");
-        imagePath = `director/${Date.now()}-${compressedFile.name || 'image.jpg'}`;
-        const storageRef = ref(storage, imagePath);
-        await uploadBytes(storageRef, compressedFile);
-        imageUrl = await getDownloadURL(storageRef);
-        console.log("Upload complete. URL:", imageUrl);
+        // Convert to Base64 instead of uploading to Storage for maximum reliability
+        const reader = new FileReader();
+        const base64Promise = new Promise<string>((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(compressedFile);
+        });
+        
+        imageUrl = await base64Promise;
+        imagePath = "base64"; // Marker that we are using base64
+        console.log("Converted to Base64. Length:", imageUrl.length);
+
+        // Delete old image from Storage if it was there (cleanup)
+        if (existingImagePath && existingImagePath !== "base64") {
+          try {
+            const oldImageRef = ref(storage, existingImagePath);
+            await deleteObject(oldImageRef);
+          } catch (e) {
+            console.warn("Cleanup error:", e);
+          }
+        }
       }
 
       const dataToSave = {
