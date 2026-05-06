@@ -27,10 +27,15 @@ function PublicationsContent() {
 
   const publicationsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, "publications"), orderBy("createdAt", "desc"));
+    return query(collection(firestore, "publications"));
   }, [firestore]);
 
-  const { data: publications, isLoading } = useCollection(publicationsQuery);
+  const { data: rawPubs, isLoading } = useCollection(publicationsQuery);
+  const publications = rawPubs ? [...rawPubs].sort((a: any, b: any) => {
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeB - timeA; // Descending
+  }) : null;
 
   const filteredPubs = publications?.filter(pub => 
     activeCategory ? pub.category === activeCategory : true

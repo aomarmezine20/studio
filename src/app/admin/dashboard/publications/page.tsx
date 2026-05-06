@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db, auth } from "@/lib/firebase";
+import { db, auth, storage } from "@/lib/firebase";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +21,8 @@ export default function PublicationsAdminPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPub, setEditingPub] = useState<any>(null);
   const [formLoading, setFormLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   const [title, setTitle] = useState("");
@@ -55,6 +58,8 @@ export default function PublicationsAdminPage() {
     setDescription("");
     setCategory("Revue REEM");
     setPdfUrl("");
+    setPdfFile(null);
+    setUploadProgress(null);
     setEditingPub(null);
   };
 
@@ -77,7 +82,29 @@ export default function PublicationsAdminPage() {
     
     setFormLoading(true);
     try {
-      const pubData = { title, description, category, pdfUrl, updatedAt: serverTimestamp() };
+      let finalPdfUrl = pdfUrl;
+
+      // Handle PDF Upload
+      if (pdfFile) {
+        const storageRef = ref(storage, `publications/${Date.now()}_${pdfFile.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, pdfFile);
+
+        finalPdfUrl = await new Promise((resolve, reject) => {
+          uploadTask.on('state_changed', 
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setUploadProgress(progress);
+            }, 
+            (error) => reject(error), 
+            async () => {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve(downloadURL);
+            }
+          );
+        });
+      }
+
+      const pubData = { title, description, category, pdfUrl: finalPdfUrl, updatedAt: serverTimestamp() };
 
       if (editingPub) {
         await updateDoc(doc(db, "publications", editingPub.id), pubData);
@@ -90,9 +117,11 @@ export default function PublicationsAdminPage() {
       resetForm();
       fetchPublications();
     } catch (error) {
-      toast({ title: "Erreur", description: "Une erreur est survenue", variant: "destructive" });
+      console.error("Submission error:", error);
+      toast({ title: "Erreur", description: "Une erreur est survenue lors de l'envoi.", variant: "destructive" });
     } finally {
       setFormLoading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -137,7 +166,27 @@ export default function PublicationsAdminPage() {
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="pdfUrl">Lien vers le fichier (PDF)</Label>
+                            <Label htmlFor="pdfFile">Fichier PDF (Revue)</Label>
+                            <div className="flex gap-4 items-center">
+                                <Input 
+                                    id="pdfFile" 
+                                    type="file" 
+                                    accept="application/pdf" 
+                                    onChange={e => setPdfFile(e.target.files?.[0] || null)} 
+                                />
+                                {pdfUrl && !pdfFile && (
+                                    <span className="text-xs text-green-600 font-medium">Fichier déjà présent</span>
+                                )}
+                            </div>
+                            {uploadProgress !== null && (
+                                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                                    <div className="bg-primary h-2.5 rounded-full transition-all" style={{ width: `${uploadProgress}%` }}></div>
+                                    <p className="text-[10px] text-right mt-1">{Math.round(uploadProgress)}%</p>
+                                </div>
+                            )}
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="pdfUrl">Ou Lien externe (Optionnel)</Label>
                             <Input id="pdfUrl" value={pdfUrl} onChange={e => setPdfUrl(e.target.value)} placeholder="https://..." />
                         </div>
                         <div className="space-y-2">
