@@ -5,10 +5,13 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useCollection, useMemoFirebase, useFirestore } from "@/firebase";
 import { collection, query, orderBy, where } from "firebase/firestore";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Loader2, Search, FilterX, Link as LinkIcon } from "lucide-react";
+import { Calendar, MapPin, Loader2, Search, FilterX, Link as LinkIcon, ExternalLink, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useState, Suspense } from "react";
+import { Button } from "@/components/ui/button";
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -17,6 +20,7 @@ function EventsContent() {
   const searchParams = useSearchParams();
   const catParam = searchParams.get('cat');
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   const categoryMap: Record<string, string> = {
     'colloques': 'Colloques et Conférences',
@@ -107,9 +111,69 @@ function EventsContent() {
                     {event.description}
                   </p>
                 </CardContent>
+                <CardFooter className="pt-0">
+                  <Button variant="outline" className="w-full gap-2" onClick={() => setSelectedEvent(event)}>
+                    <Info size={16} />
+                    Voir les détails
+                  </Button>
+                </CardFooter>
               </Card>
             ))}
           </div>
+
+          <Dialog open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              {selectedEvent && (
+                <>
+                  <DialogHeader>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="secondary">{selectedEvent.category}</Badge>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Calendar size={14} />
+                        {selectedEvent.date}
+                      </div>
+                    </div>
+                    <DialogTitle className="text-2xl font-headline text-primary leading-tight">
+                      {selectedEvent.title}
+                    </DialogTitle>
+                  </DialogHeader>
+                  
+                  <div className="space-y-6 py-4">
+                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                      {selectedEvent.category === 'Webinaires' ? (
+                        <div className="flex flex-col gap-1 w-full">
+                          <span className="font-semibold flex items-center gap-2 text-primary">
+                            <LinkIcon size={16} /> Lien de la réunion
+                          </span>
+                          <a href={selectedEvent.location.startsWith('http') ? selectedEvent.location : `https://${selectedEvent.location}`} target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline flex items-center gap-1 break-all">
+                            {selectedEvent.location}
+                            <ExternalLink size={12} />
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-1 w-full">
+                          <span className="font-semibold flex items-center gap-2 text-primary">
+                            <MapPin size={16} /> Lieu
+                          </span>
+                          <span className="text-gray-700">{selectedEvent.location}</span>
+                          <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedEvent.location)}`} target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline text-sm flex items-center gap-1 mt-1">
+                            Voir sur la carte <ExternalLink size={12} />
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">Description</h4>
+                      <div className="text-gray-700 whitespace-pre-line leading-relaxed">
+                        {selectedEvent.description}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
         ) : (
           <div className="text-center py-20 text-muted-foreground flex flex-col items-center gap-4">
             <FilterX size={48} className="opacity-20" />

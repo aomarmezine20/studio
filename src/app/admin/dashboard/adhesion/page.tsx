@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { Loader2 } from "lucide-react";
 
 const AdhesionAdminPage = () => {
   const [pageTitle, setPageTitle] = useState("");
@@ -10,45 +13,40 @@ const AdhesionAdminPage = () => {
   const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [saving, setSaving] = useState(false);
+  const docRef = doc(db, 'singleContent', 'adhesion');
+
   useEffect(() => {
-    // Simulate fetching data
-    setPageTitle("Rejoindre le Réseau");
-    setPageSubtitle("Choisissez le niveau d'adhésion qui correspond à votre profil académique ou professionnel.");
-    setPlans([
-      {
-        name: "Étudiant / Doctorant",
-        price: "25€ / an",
-        features: [
-          "Accès aux séminaires doctoraux",
-          "Réduction sur les frais de colloques",
-          "Newsletter scientifique bimensuelle",
-          "Accès aux ateliers méthodologiques"
-        ]
-      },
-      {
-        name: "Chercheur / Enseignant",
-        price: "60€ / an",
-        featured: true,
-        features: [
-          "Publication prioritaire dans REEM",
-          "Droit de vote à l'Assemblée Générale",
-          "Accès complet à la base de données",
-          "Participation aux comités scientifiques",
-          "Networking avec experts internationaux"
-        ]
-      },
-      {
-        name: "Institutionnel",
-        price: "Sur devis",
-        features: [
-          "Partenariat stratégique",
-          "Accès pour 10+ membres",
-          "Logo sur nos supports de communication",
-          "Organisation d'événements conjoints"
-        ]
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setPageTitle(data.pageTitle || "Rejoindre le Réseau");
+          setPageSubtitle(data.pageSubtitle || "Choisissez le niveau d'adhésion qui correspond à votre profil académique ou professionnel.");
+          setPlans(data.plans || []);
+        } else {
+          setPageTitle("Rejoindre le Réseau");
+          setPageSubtitle("Choisissez le niveau d'adhésion qui correspond à votre profil académique ou professionnel.");
+          setPlans([
+            {
+              name: "Étudiant / Doctorant",
+              price: "25€ / an",
+              features: [
+                "Accès aux séminaires doctoraux",
+                "Réduction sur les frais de colloques"
+              ]
+            }
+          ]);
+        }
+      } catch (error) {
+        toast.error("Erreur de chargement des données.");
+      } finally {
+        setLoading(false);
       }
-    ]);
-    setLoading(false);
+    };
+    fetchData();
   }, []);
 
   const handlePlanChange = (index: number, field: string, value: any) => {
@@ -77,11 +75,19 @@ const AdhesionAdminPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
     try {
-      console.log("Saving data:", { pageTitle, pageSubtitle, plans });
+      await setDoc(docRef, {
+        pageTitle,
+        pageSubtitle,
+        plans,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
       toast.success("Les modifications ont été enregistrées avec succès !");
     } catch (error) {
       toast.error("Une erreur est survenue lors de l'enregistrement des modifications.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -95,7 +101,7 @@ const AdhesionAdminPage = () => {
       
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="space-y-4 p-6 border rounded-lg bg-white">
-          <h2 class="text-lg font-semibold">Contenu de l'en-tête</h2>
+          <h2 className="text-lg font-semibold">Contenu de l'en-tête</h2>
           <div>
             <label htmlFor="pageTitle" className="block text-sm font-medium text-gray-700">Titre de la page</label>
             <input 
@@ -120,7 +126,7 @@ const AdhesionAdminPage = () => {
         </div>
 
         <div className="space-y-6">
-          <h2 class="text-lg font-semibold">Plans d'adhésion</h2>
+          <h2 className="text-lg font-semibold">Plans d'adhésion</h2>
           {plans.map((plan, planIndex) => (
             <div key={planIndex} className="p-6 border rounded-lg bg-white space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -174,7 +180,8 @@ const AdhesionAdminPage = () => {
         </div>
 
         <div className="flex justify-end">
-          <Button type="submit" >
+          <Button type="submit" disabled={saving}>
+            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Enregistrer les modifications
           </Button>
         </div>

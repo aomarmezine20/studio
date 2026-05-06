@@ -114,8 +114,8 @@ export default function ContactPage() {
                   Pour les demandes spécifiques concernant les nouvelles adhésions ou les 
                   partenariats institutionnels, veuillez contacter le secrétariat général.
                 </p>
-                <a href="mailto:secretariat@scienceconnect.org" className="text-secondary font-bold hover:underline">
-                  secretariat@scienceconnect.org
+                <a href={`mailto:${settings.email}`} className="text-secondary font-bold hover:underline">
+                  {settings.email}
                 </a>
               </div>
             </div>
