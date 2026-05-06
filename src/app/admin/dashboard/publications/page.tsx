@@ -84,24 +84,34 @@ export default function PublicationsAdminPage() {
     try {
       let finalPdfUrl = pdfUrl;
 
-      // Handle PDF Upload
+      // Handle PDF (Base64)
       if (pdfFile) {
-        const storageRef = ref(storage, `publications/${Date.now()}_${pdfFile.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, pdfFile);
-
-        finalPdfUrl = await new Promise((resolve, reject) => {
-          uploadTask.on('state_changed', 
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setUploadProgress(progress);
-            }, 
-            (error) => reject(error), 
-            async () => {
+        // Firestore limit is 1MB. Base64 adds ~33% overhead.
+        // So we should stay below ~700KB for the raw file.
+        if (pdfFile.size > 800 * 1024) {
+          toast({ 
+            title: "Fichier trop volumineux", 
+            description: "Le PDF dépasse 800KB. Pour garantir la stabilité, il sera envoyé sur le serveur de stockage.",
+            variant: "default" 
+          });
+          
+          // Fallback to Storage for large files
+          const storageRef = ref(storage, `publications/${Date.now()}_${pdfFile.name}`);
+          const uploadTask = uploadBytesResumable(storageRef, pdfFile);
+          finalPdfUrl = await new Promise((resolve, reject) => {
+            uploadTask.on('state_changed', null, (error) => reject(error), async () => {
               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
               resolve(downloadURL);
-            }
-          );
-        });
+            });
+          });
+        } else {
+          // Small file: Use Base64 as requested
+          const reader = new FileReader();
+          finalPdfUrl = await new Promise((resolve) => {
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(pdfFile);
+          });
+        }
       }
 
       const pubData = { title, description, category, pdfUrl: finalPdfUrl, updatedAt: serverTimestamp() };
