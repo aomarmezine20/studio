@@ -64,7 +64,6 @@ const HomepageAdminPage = () => {
           }));
           setAboutPreview(aboutData.aboutImageUrl || null);
         }
-        }
       } catch (error) {
         console.error("Error fetching homepage content:", error);
         toast({ title: "Erreur", description: "Impossible de charger les données.", variant: "destructive" });
@@ -83,6 +82,7 @@ const HomepageAdminPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    try {
       // Handle Hero Image
       if (heroImageFile) {
         const options = { maxSizeMB: 0.2, maxWidthOrHeight: 1200, useWebWorker: false };
