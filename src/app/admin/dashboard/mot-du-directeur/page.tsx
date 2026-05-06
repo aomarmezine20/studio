@@ -84,17 +84,21 @@ const DirectorMessagePage = () => {
         
         // Compress image before upload
         const options = {
-          maxSizeMB: 0.5,
-          maxWidthOrHeight: 1024,
-          useWebWorker: true,
+          maxSizeMB: 0.1, // Even more compressed for speed
+          maxWidthOrHeight: 800,
+          useWebWorker: false, // Disable web worker to avoid potential hangs in some browsers
         };
+        console.log("Compressing image...");
         const compressedFile = await imageCompression(imageFile, options);
+        console.log("Image compressed. Size:", compressedFile.size);
         
         // Upload new image
+        console.log("Uploading to Storage...");
         imagePath = `director/${Date.now()}-${compressedFile.name || 'image.jpg'}`;
         const storageRef = ref(storage, imagePath);
         await uploadBytes(storageRef, compressedFile);
         imageUrl = await getDownloadURL(storageRef);
+        console.log("Upload complete. URL:", imageUrl);
       }
 
       const dataToSave = {

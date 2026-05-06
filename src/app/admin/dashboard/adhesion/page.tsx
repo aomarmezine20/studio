@@ -73,6 +73,36 @@ const AdhesionAdminPage = () => {
     setPlans(newPlans);
   };
 
+  const addPlan = () => {
+    setPlans([...plans, { name: "Nouveau Plan", price: "0€ / an", features: [], featured: false }]);
+  };
+
+  const removePlan = (index: number) => {
+    if (confirm("Voulez-vous vraiment supprimer ce pack ?")) {
+      const newPlans = [...plans];
+      newPlans.splice(index, 1);
+      setPlans(newPlans);
+    }
+  };
+
+  const movePlanUp = (index: number) => {
+    if (index === 0) return;
+    const newPlans = [...plans];
+    const temp = newPlans[index];
+    newPlans[index] = newPlans[index - 1];
+    newPlans[index - 1] = temp;
+    setPlans(newPlans);
+  };
+
+  const movePlanDown = (index: number) => {
+    if (index === plans.length - 1) return;
+    const newPlans = [...plans];
+    const temp = newPlans[index];
+    newPlans[index] = newPlans[index + 1];
+    newPlans[index + 1] = temp;
+    setPlans(newPlans);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -126,10 +156,41 @@ const AdhesionAdminPage = () => {
         </div>
 
         <div className="space-y-6">
-          <h2 className="text-lg font-semibold">Plans d'adhésion</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Plans d'adhésion</h2>
+            <Button type="button" variant="outline" size="sm" onClick={addPlan}>+ Ajouter un Pack</Button>
+          </div>
           {plans.map((plan, planIndex) => (
-            <div key={planIndex} className="p-6 border rounded-lg bg-white space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div key={planIndex} className="p-6 border rounded-lg bg-white space-y-4 relative">
+              <div className="flex items-center gap-2 absolute top-4 right-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => movePlanUp(planIndex)}
+                  disabled={planIndex === 0}
+                >
+                  ↑
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => movePlanDown(planIndex)}
+                  disabled={planIndex === plans.length - 1}
+                >
+                  ↓
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="destructive" 
+                  size="sm" 
+                  onClick={() => removePlan(planIndex)}
+                >
+                  Supprimer
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-10">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Nom du plan</label>
                   <input 
