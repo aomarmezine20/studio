@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useState, Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 function EventsContent() {
