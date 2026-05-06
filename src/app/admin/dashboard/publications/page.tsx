@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { db, auth, storage } from "@/lib/firebase";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
@@ -84,34 +84,25 @@ export default function PublicationsAdminPage() {
     try {
       let finalPdfUrl = pdfUrl;
 
-      // Handle PDF (Base64)
+      // Handle PDF (Base64 only as Storage is inactive)
       if (pdfFile) {
-        // Firestore limit is 1MB. Base64 adds ~33% overhead.
-        // So we should stay below ~700KB for the raw file.
+        // Firestore has a 1MB limit. Base64 adds 33% overhead.
+        // We MUST stay below ~750KB to be safe.
         if (pdfFile.size > 800 * 1024) {
           toast({ 
-            title: "Fichier trop volumineux", 
-            description: "Le PDF dépasse 800KB. Pour garantir la stabilité, il sera envoyé sur le serveur de stockage.",
-            variant: "default" 
+            title: "Fichier trop lourd", 
+            description: "Sans service de stockage activé, les fichiers doivent faire moins de 800 Ko. Veuillez compresser votre PDF.", 
+            variant: "destructive" 
           });
-          
-          // Fallback to Storage for large files
-          const storageRef = ref(storage, `publications/${Date.now()}_${pdfFile.name}`);
-          const uploadTask = uploadBytesResumable(storageRef, pdfFile);
-          finalPdfUrl = await new Promise((resolve, reject) => {
-            uploadTask.on('state_changed', null, (error) => reject(error), async () => {
-              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve(downloadURL);
-            });
-          });
-        } else {
-          // Small file: Use Base64 as requested
-          const reader = new FileReader();
-          finalPdfUrl = await new Promise((resolve) => {
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(pdfFile);
-          });
+          setFormLoading(false);
+          return;
         }
+
+        const reader = new FileReader();
+        finalPdfUrl = await new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(pdfFile);
+        });
       }
 
       const pubData = { title, description, category, pdfUrl: finalPdfUrl, updatedAt: serverTimestamp() };
